@@ -56,8 +56,8 @@
   @keyframes introLight { 0% { opacity: 0; transform: translate(-50%,-50%) scale(.05); } 30% { opacity: 1; } 100% { opacity: 1; transform: translate(-50%,-50%) scale(1); } }
   /* 1: the words fall away */
   #intro .words { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 16px; }
-  #intro .words span { position: relative; font: 400 clamp(24px, 7.4vw, 44px)/1.25 var(--brush); color: #7d7873; opacity: 0; animation: introFade .6s ease var(--d) forwards, introFall .75s cubic-bezier(.5,0,.9,.4) var(--f) forwards; }
-  #intro .words span::after { content: ""; position: absolute; left: -5%; right: -5%; top: 50%; height: 4px; border-radius: 2px; background: var(--red); transform: rotate(-3deg) scaleX(0); transform-origin: left; animation: introStrike .22s ease-out var(--s) forwards; }
+  #intro .words span { position: relative; font: 400 clamp(24px, 7.4vw, 44px)/1.25 var(--brush); color: #7d7873; opacity: 0; animation: introFade .6s ease var(--d) forwards, introFall 1.15s cubic-bezier(.5,0,.9,.4) var(--f) forwards; }
+  #intro .words span::after { content: ""; position: absolute; left: -5%; right: -5%; top: 50%; height: 4px; border-radius: 2px; background: var(--red); transform: rotate(-3deg) scaleX(0); transform-origin: left; animation: introStrike .4s ease-out var(--s) forwards; }
   #intro .final { display: grid; place-items: center; padding: 24px; }
   @keyframes introFade { to { opacity: 1; } }
   @keyframes introFall { to { opacity: 0; transform: translateY(70vh) rotate(var(--r)); } }
@@ -1081,7 +1081,7 @@ $("qr-dl").addEventListener("click", () => {
    OPENING picks which one: 0 light and words, 1 the words fall away,
    2 the stone rolls away, 3 lightning reveals the cross, 4 a direct question.
    Adding ?intro=N to the address plays opening N every time (for previewing). */
-const OPENING = 3;
+const OPENING = 1;
 (function intro() {
   const box = $("intro");
   const q = new URLSearchParams(location.search).get("intro");
@@ -1094,9 +1094,10 @@ const OPENING = 3;
   const risen = (d1, d2) => `<p class="mid in" style="--d:${d1}s">The Lord is close</p><p class="mid red in" style="--d:${d2}s">to the brokenhearted.</p><span class="ref in" style="--d:${d2 + 0.9}s">Psalm 34:18</span>`;
   let html, dur, after;
   if (which === 1) {
-    const n = CARRY.length, step = 0.14, start = 1.5;
-    const words = CARRY.map((c, i) => `<span style="--d:${(i * 0.06).toFixed(2)}s;--s:${(start + i * step).toFixed(2)}s;--f:${(start + 0.22 + i * step).toFixed(2)}s;--r:${i % 2 ? 14 : -11}deg">${c.k}</span>`).join("");
-    const end = start + n * step + 0.7;
+    // step = seconds between one word being struck out and the next. Raise it to slow the opening down.
+    const n = CARRY.length, step = 0.36, start = 2.2;
+    const words = CARRY.map((c, i) => `<span style="--d:${(i * 0.08).toFixed(2)}s;--s:${(start + i * step).toFixed(2)}s;--f:${(start + 0.45 + i * step).toFixed(2)}s;--r:${i % 2 ? 14 : -11}deg">${c.k}</span>`).join("");
+    const end = start + n * step + 1.2;
     html = `<div class="stage"><div class="words">${words}</div></div>
       <div class="fill final"><div><p class="mid in" style="--d:${end.toFixed(2)}s">The Lord is close to the brokenhearted.</p><span class="ref in" style="--d:${(end + 0.7).toFixed(2)}s">Psalm 34:18</span></div></div>`;
     dur = (end + 3) * 1000;
