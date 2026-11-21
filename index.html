@@ -17,12 +17,32 @@
     --line: #2b2b30;
     --text: #f3f1ee;
     --muted: #a9a6a1;
-    --red: #d81f26;
-    --red-deep: #8e0f14;
+    --accent: #d81f26;
+    --accent-text: #d81f26;
+    --accent-title: #d81f26;
+    --accent-deep: #8e0f14;
+    --accent-strike: #d81f26;
+    --cross-art: url(images/cross.png?v=7);
     --glow: #f4d9a6;
     --brush: "Permanent Marker", "Segoe Print", cursive;
     --label: "Oswald", "Arial Narrow", sans-serif;
     --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  :root[data-theme="plum"] {
+    --accent: #7736a7;
+    --accent-text: #d79bff;
+    --accent-title: #914cc5;
+    --accent-deep: #4c245b;
+    --accent-strike: #914cc5;
+    --cross-art: url(images/cross-plum.png?v=2);
+  }
+  :root[data-theme="forest"] {
+    --accent: #13704b;
+    --accent-text: #7ce6a7;
+    --accent-title: #19a66c;
+    --accent-deep: #214b32;
+    --accent-strike: #19a66c;
+    --cross-art: url(images/cross-forest.png?v=2);
   }
   * { box-sizing: border-box; }
   body {
@@ -43,7 +63,7 @@
   #intro .stage { position: relative; width: 100%; max-width: 640px; padding: 24px; }
   #intro .big { margin: 0; font: 400 clamp(40px, 13vw, 84px)/1.05 var(--brush); text-wrap: balance; }
   #intro .mid { margin: 0; font: 400 clamp(32px, 10vw, 64px)/1.1 var(--brush); text-wrap: balance; }
-  #intro .red { color: var(--red); text-shadow: 0 0 28px rgba(216,31,38,.55); margin-top: 10px; }
+  #intro .red { color: var(--accent-title); text-shadow: 0 0 10px color-mix(in srgb, var(--accent) 15%, transparent); margin-top: 10px; }
   #intro .ref { display: block; margin-top: 18px; font: 600 14px/1 var(--label); letter-spacing: .3em; text-transform: uppercase; color: var(--glow); }
   #intro .in { opacity: 0; animation: introWord 1.1s cubic-bezier(.2,.7,.2,1) var(--d, 0s) forwards; }
   #intro .inout { opacity: 0; animation: introInOut var(--len, 2.6s) ease var(--d, 0s) forwards; }
@@ -57,7 +77,7 @@
   /* 1: the words fall away */
   #intro .words { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 16px; }
   #intro .words span { position: relative; font: 400 clamp(24px, 7.4vw, 44px)/1.25 var(--brush); color: #7d7873; opacity: 0; animation: introFade .6s ease var(--d) forwards, introFall 1.15s cubic-bezier(.5,0,.9,.4) var(--f) forwards; }
-  #intro .words span::after { content: ""; position: absolute; left: -5%; right: -5%; top: 50%; height: 4px; border-radius: 2px; background: var(--red); transform: rotate(-3deg) scaleX(0); transform-origin: left; animation: introStrike .4s ease-out var(--s) forwards; }
+  #intro .words span::after { content: ""; position: absolute; left: -5%; right: -5%; top: 50%; height: 4px; border-radius: 2px; background: var(--accent-strike); transform: rotate(-3deg) scaleX(0); transform-origin: left; animation: introStrike .4s ease-out var(--s) forwards; }
   #intro .final { display: grid; place-items: center; padding: 24px; }
   @keyframes introFade { to { opacity: 1; } }
   @keyframes introFall { to { opacity: 0; transform: translateY(70vh) rotate(var(--r)); } }
@@ -70,7 +90,7 @@
   @keyframes introBloom { to { box-shadow: 0 0 120px 50px rgba(244,217,166,.6); } }
   /* 3: lightning reveals the cross */
   #intro { perspective: 700px; perspective-origin: 50% 100%; }   /* same looking-up view as the home screen */
-  #intro .storm { background: url(images/cross.jpg?v=4) 50% 0% / cover; opacity: 0; animation: introStorm 3s linear .5s forwards; transform-origin: 50% 100%; transform: rotateX(14deg) scale(1.12, 1.16); inset: -20% -14% 0 -14%; }
+  #intro .storm { background: var(--cross-art) 50% 0% / cover; opacity: 0; animation: introStorm 3s linear .5s forwards; transform-origin: 50% 100%; transform: rotateX(14deg) scale(1.12, 1.16); inset: -20% -14% 0 -14%; }
   /* Wide screens: show the cross as an upright picture in the middle, fading into black at the sides. */
   @media (min-aspect-ratio: 1/1) {
     #intro .storm { inset: -8% auto 0 50%; width: 88vh; margin-left: -44vh; -webkit-mask-image: linear-gradient(90deg, transparent 2%, #000 24%, #000 76%, transparent 98%); mask-image: linear-gradient(90deg, transparent 2%, #000 24%, #000 76%, transparent 98%); }
@@ -82,14 +102,6 @@
   @keyframes introFlash { 0%, 9% { opacity: 0; } 10% { opacity: .35; } 15% { opacity: 0; } 39% { opacity: 0; } 40% { opacity: .45; } 46% { opacity: 0; } 75% { opacity: 0; } 76% { opacity: .5; } 88%, 100% { opacity: 0; } }
   #back-openings { position: fixed; left: 12px; bottom: calc(84px + env(safe-area-inset-bottom)); z-index: 50; background: var(--glow); color: #111; border-radius: 999px; padding: 10px 16px; font: 600 13px/1 var(--body); text-decoration: none; box-shadow: 0 6px 20px rgba(0,0,0,.6); }
 
-  /* Crisis strip — always visible */
-  .crisis {
-    position: sticky; top: 0; z-index: 30;
-    background: var(--red-deep); color: #fff;
-    font: 500 14px/1.3 var(--body); text-align: center; padding: 9px 12px;
-  }
-  .crisis a { font-weight: 600; text-underline-offset: 3px; white-space: nowrap; }
-
   /* Views (one shown at a time) */
   .view { display: none; }
   .view.on { display: block; }
@@ -100,27 +112,18 @@
   .hero { position: relative; text-align: center; overflow: hidden; }
   .sky {
     position: relative; height: 66vh; min-height: 440px; max-height: 740px; max-width: 640px; margin: 0 auto;
-    overflow: hidden; perspective: 560px; perspective-origin: 50% 100%;   /* viewer stands at the foot of the cross, looking up */
-    background:
-      radial-gradient(ellipse 55% 45% at 12% 30%, #2c2c30 0%, transparent 70%),
-      radial-gradient(ellipse 55% 40% at 90% 20%, #26262a 0%, transparent 70%),
-      radial-gradient(ellipse 70% 60% at 50% 40%, #34343a 0%, transparent 72%),
-      linear-gradient(#121214, #0a0a0b 92%);
+    overflow: hidden;
   }
-  .sky::after { content: ""; position: absolute; inset: -2px; z-index: 1; background: linear-gradient(transparent 52%, var(--bg) 91%), linear-gradient(90deg, var(--bg) 2%, transparent 9%, transparent 91%, var(--bg) 98%); }
-  /* Tilted back and stretched upward so the cross towers over the viewer. */
-  .sky img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; transform-origin: 50% 100%; transform: rotateX(17deg) scale(1.34, 1.42); }
+  .sky .cross-art { position: absolute; inset: 0 0 88px; background: var(--cross-art) center / contain no-repeat; }
   .hero-text { position: relative; z-index: 2; margin-top: -88px; padding-bottom: 8px; }
-  /* Wide screens: keep the picture the same upright shape as on a phone, so the whole cross shows. */
   @media (min-width: 700px) {
-    .sky { height: 72vh; min-height: 460px; max-height: 760px; width: calc(72vh * .76); min-width: 350px; max-width: 578px; }
-    .sky::after { background: linear-gradient(transparent 50%, var(--bg) 90%), linear-gradient(90deg, var(--bg) 3%, transparent 18%, transparent 82%, var(--bg) 97%); }
+    .sky { height: 72vh; min-height: 460px; max-height: 760px; width: calc(72vh * .9); min-width: 350px; max-width: 684px; }
   }
   .brand { font: 400 clamp(44px, 13vw, 68px)/.95 var(--brush); margin: 0; letter-spacing: .5px; transform: rotate(-3deg); }
-  .brand span { color: var(--red); display: block; text-shadow: 0 0 22px rgba(216,31,38,.45); }
+  .brand span { color: var(--accent-title); display: block; }
   .ministry {
     display: inline-block; font: 600 14px/1 var(--label); letter-spacing: .42em; text-transform: uppercase;
-    margin: 12px 0 0 .42em; padding-bottom: 8px; border-bottom: 3px solid var(--red);
+    margin: 12px 0 0 .42em; padding-bottom: 8px; border-bottom: 3px solid var(--accent-title);
   }
   .hero h2 { font: 600 clamp(22px, 6.2vw, 30px)/1.25 var(--body); margin: 26px 0 10px; text-wrap: balance; }
   .hero p { color: var(--muted); margin: 0 auto 22px; max-width: 30em; text-wrap: pretty; }
@@ -128,9 +131,9 @@
   /* Buttons & tiles */
   .cta {
     display: block; width: 100%; text-align: center; text-decoration: none;
-    background: linear-gradient(180deg, var(--red), var(--red-deep));
+    background: linear-gradient(180deg, var(--accent), var(--accent-deep));
     border: 0; border-radius: 14px; padding: 16px 18px;
-    box-shadow: 0 8px 28px rgba(216,31,38,.28);
+    box-shadow: 0 8px 28px color-mix(in srgb, var(--accent) 28%, transparent);
   }
   .cta b { display: block; font: 400 24px/1.1 var(--brush); letter-spacing: .5px; }
   .cta small { font-size: 14px; opacity: .9; }
@@ -146,7 +149,7 @@
 
   /* Type */
   .block { padding-top: 48px; }
-  .eyebrow { font: 600 13px/1 var(--label); letter-spacing: .3em; text-transform: uppercase; color: var(--red); margin: 0 0 10px; }
+  .eyebrow { font: 600 13px/1 var(--label); letter-spacing: .3em; text-transform: uppercase; color: var(--accent-text); margin: 0 0 10px; }
   h3.title { font: 400 clamp(30px, 8.5vw, 40px)/1.05 var(--brush); margin: 0 0 10px; }
   .lede { color: var(--muted); margin: 0 0 20px; text-wrap: pretty; }
   .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
@@ -156,7 +159,7 @@
   .row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
   .ghost { background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 9px 16px; font-size: 14px; font-weight: 500; text-decoration: none; }
   .ghost:hover { border-color: var(--muted); }
-  .votd { border-left: 4px solid var(--red); border-radius: 4px 16px 16px 4px; }
+  .votd { border-left: 4px solid var(--accent); border-radius: 4px 16px 16px 4px; }
   .note { font-size: 13px; color: var(--muted); margin: 12px 0 0; }
   .preview { font-size: 13px; color: var(--glow); border: 1px dashed #5d5340; border-radius: 10px; padding: 10px 12px; margin: 0 0 16px; }
 
@@ -166,12 +169,12 @@
     background: var(--panel-2); border: 1px solid var(--line); border-radius: 999px;
     padding: 10px 16px; font: 500 15px/1 var(--label); letter-spacing: .1em; text-transform: uppercase;
   }
-  .chip[aria-pressed="true"] { background: var(--red); border-color: var(--red); }
+  .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); }
   #answer { margin-top: 16px; }
   .truth { margin: 16px 0 0; }
   .prayer { margin: 16px 0 0; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-style: italic; }
   .prayer b { display: block; font: 600 12px/1 var(--label); letter-spacing: .24em; text-transform: uppercase; color: var(--text); font-style: normal; margin-bottom: 8px; }
-  .urgent { margin-top: 16px; padding: 16px; border-radius: 12px; background: rgba(216,31,38,.12); border: 1px solid var(--red-deep); }
+  .urgent { margin-top: 16px; padding: 16px; border-radius: 12px; background: color-mix(in srgb, var(--accent) 12%, transparent); border: 1px solid var(--accent-deep); }
   .urgent p { margin: 0 0 12px; }
 
   /* Forms */
@@ -183,10 +186,10 @@
   }
   textarea { min-height: 120px; resize: vertical; }
   .check { display: flex; gap: 10px; align-items: center; margin: 14px 0 18px; color: var(--muted); font-size: 15px; }
-  .check input { width: 20px; height: 20px; accent-color: var(--red); flex: none; }
+  .check input { width: 20px; height: 20px; accent-color: var(--accent); flex: none; }
   .inline { display: flex; gap: 8px; }
   .inline input { flex: 1; min-width: 0; }
-  .inline button { flex: none; background: var(--red); border: 0; border-radius: 10px; padding: 0 18px; font-weight: 600; }
+  .inline button { flex: none; background: var(--accent); border: 0; border-radius: 10px; padding: 0 18px; font-weight: 600; }
 
   /* Segmented control */
   .seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 4px; margin-bottom: 16px; }
@@ -197,15 +200,15 @@
   .post p { margin: 0 0 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
   .post .meta { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
   .prayed { background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 500; white-space: nowrap; }
-  .prayed[aria-pressed="true"] { border-color: var(--red); color: #fff; background: rgba(216,31,38,.16); }
+  .prayed[aria-pressed="true"] { border-color: var(--accent); color: #fff; background: color-mix(in srgb, var(--accent) 16%, transparent); }
   .empty { text-align: center; color: var(--muted); padding: 28px 16px; }
 
   /* Stories */
   .story { padding: 12px; }
   .thumb { position: relative; display: grid; place-items: center; width: 100%; aspect-ratio: 16/9; padding: 0; overflow: hidden; border-radius: 10px; background: radial-gradient(circle at 50% 35%, #3a2a2a, #121214 75%) center / cover; border: 1px solid var(--line); cursor: pointer; }
   .thumb::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.28); }
-  .thumb svg { position: relative; width: 58px; height: 58px; padding: 14px; border-radius: 50%; background: var(--red); }
-  .player { aspect-ratio: 16/9; border-radius: 10px; overflow: hidden; background: #000; }
+  .thumb svg { position: relative; width: 58px; height: 58px; padding: 14px; border-radius: 50%; background: var(--accent); }
+  .player { aspect-ratio: 16/9; border-radius: 10px; overflow: hidden; }
   .player iframe { width: 100%; height: 100%; border: 0; display: block; }
   .story .body { padding: 12px 4px 2px; }
   .story h4 { margin: 0 0 4px; font: 600 17px/1.25 var(--body); }
@@ -213,22 +216,22 @@
   .story .by { margin-top: 6px; color: var(--text); }
 
   /* Live */
-  .livepill { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 14px; padding: 8px 16px; border-radius: 999px; background: var(--red); color: #fff; text-decoration: none; font: 600 13px/1 var(--label); letter-spacing: .18em; text-transform: uppercase; }
+  .livepill { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 14px; padding: 8px 16px; border-radius: 999px; background: var(--accent); color: #fff; text-decoration: none; font: 600 13px/1 var(--label); letter-spacing: .18em; text-transform: uppercase; }
   .livepill i, .eyebrow i.dot { width: 9px; height: 9px; border-radius: 50%; background: #fff; animation: livePulse 1.4s ease-in-out infinite; }
-  .eyebrow i.dot { display: inline-block; margin-right: 8px; background: var(--red); }
+  .eyebrow i.dot { display: inline-block; margin-right: 8px; background: var(--accent); }
   @keyframes livePulse { 50% { opacity: .25; } }
   @media (prefers-reduced-motion: reduce) { .livepill i, .eyebrow i.dot { animation: none; } }
-  #live { scroll-margin-top: 64px; }
+  #live { scroll-margin-top: 16px; }
   .live h4 { margin: 0 0 12px; font: 600 18px/1.3 var(--body); }
   [hidden] { display: none !important; }
-  .tag { font: 600 11px/1 var(--label); letter-spacing: .2em; text-transform: uppercase; color: var(--red); display: block; margin-bottom: 6px; }
+  .tag { font: 600 11px/1 var(--label); letter-spacing: .2em; text-transform: uppercase; color: var(--accent-text); display: block; margin-bottom: 6px; }
 
   /* Brush-titled cards, lists */
   .card h4.b { font: 400 24px/1.1 var(--brush); margin: 0 0 8px; }
   .card p.s { margin: 0; color: var(--muted); font-size: 15px; }
   .steps { counter-reset: s; display: grid; gap: 12px; }
   .steps .card { position: relative; padding-left: 62px; }
-  .steps .card::before { counter-increment: s; content: counter(s); position: absolute; left: 18px; top: 16px; font: 400 32px/1 var(--brush); color: var(--red); }
+  .steps .card::before { counter-increment: s; content: counter(s); position: absolute; left: 18px; top: 16px; font: 400 32px/1 var(--brush); color: var(--accent-text); }
   .steps h4, .do h4 { margin: 0 0 6px; font: 600 17px/1.3 var(--body); }
   .steps p, .do li { color: var(--muted); font-size: 15px; }
   .steps p { margin: 0; }
@@ -237,15 +240,15 @@
   a.link { display: flex; justify-content: space-between; align-items: center; gap: 12px; text-decoration: none; }
   a.link b { display: block; font-weight: 600; }
   a.link span { color: var(--muted); font-size: 14px; }
-  a.link i { font-style: normal; color: var(--red); font-size: 22px; }
+  a.link i { font-style: normal; color: var(--accent-text); font-size: 22px; }
 
   /* Plans */
   .dots { display: flex; gap: 6px; margin: 0 0 16px; }
   .dots button { flex: 1; height: 34px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); font: 600 13px/1 var(--label); color: var(--muted); }
-  .dots button.done { background: rgba(216,31,38,.18); border-color: var(--red-deep); color: var(--text); }
+  .dots button.done { background: color-mix(in srgb, var(--accent) 18%, transparent); border-color: var(--accent-deep); color: var(--text); }
   .dots button[aria-current="true"] { border-color: var(--text); color: var(--text); }
   .bar { height: 6px; background: var(--panel-2); border-radius: 3px; margin-top: 12px; overflow: hidden; }
-  .bar i { display: block; height: 100%; background: var(--red); }
+  .bar i { display: block; height: 100%; background: var(--accent); }
 
   .shirt { text-align: center; }
   .shirt svg { width: 150px; margin: 4px auto 12px; display: block; }
@@ -268,7 +271,7 @@
     font: 500 10.5px/1 var(--label); letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
   }
   nav.tabs a[aria-current="page"] { color: #fff; }
-  nav.tabs a.pray svg { color: var(--red); }
+  nav.tabs a.pray svg { color: var(--accent-text); }
 
   @media (min-width: 700px) {
     .two { grid-template-columns: 1fr 1fr; }
@@ -279,15 +282,11 @@
 
 <div id="intro" hidden role="presentation"></div>
 
-<div class="crisis" role="note">
-  Thinking about ending your life? You matter. <a href="tel:988">Call or text 988</a> — free, 24/7 (US)
-</div>
-
 <!-- ═════════ HOME ═════════ -->
 <div class="view" id="v-home">
   <header class="hero">
     <div class="sky" aria-hidden="true">
-      <img src="images/cross.jpg?v=4" alt="">
+      <div class="cross-art" aria-hidden="true"></div>
     </div>
     <div class="wrap hero-text">
       <h1 class="brand">Restored <span>Hope</span></h1>
@@ -778,7 +777,7 @@ const store = {
 (function drawCross() {
   const NS = "http://www.w3.org/2000/svg";
   const add = (parent, tag, attrs) => { const n = document.createElementNS(NS, tag); for (const a in attrs) n.setAttribute(a, attrs[a]); $(parent).appendChild(n); };
-  if (!$("rays")) return; // hero now uses images/cross.jpg?v=4
+  if (!$("rays")) return; // The hero uses the theme cross artwork.
   const cx = 120, cy = 105;
   // Burst of light: thin spikes of uneven length
   for (let i = 0; i < 44; i++) {
@@ -846,6 +845,9 @@ function player(id, autoplay) {
   return f;
 }
 function applyHome(h) {
+  const themes = ["oxblood", "plum", "forest"];
+  const theme = h?.theme === "random" ? themes[Math.floor(Math.random() * themes.length)] : h?.theme;
+  document.documentElement.dataset.theme = themes.includes(theme) ? theme : "oxblood";
   const w = h && h.word;
   if (w && w.text) { word = { v: w.text, ref: w.ref || "", note: w.note || "" }; showWord(); }
   const lv = h && h.live, on = !!(lv && lv.on && /^[\w-]{6,20}$/.test(lv.videoId || ""));
@@ -1125,7 +1127,7 @@ const OPENING = 1;
 route();
 </script>
 <script type="module">
-  import * as api from "./data.js";
+  import * as api from "./data.js?v=2";
   window.dispatchEvent(new CustomEvent("rh-data", { detail: api }));
 </script>
 </body>

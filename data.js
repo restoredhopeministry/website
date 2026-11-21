@@ -52,6 +52,11 @@ export function submitStory({ name, title, tag, note, videoUrl }) {
 
 // ── What only the ministry can do (the database refuses anyone else) ──
 export const setWord = word => setDoc(home(), { word: word ? { ...word, at: serverTimestamp() } : deleteField() }, { merge: true });
+export const COLOR_SCHEMES = ["oxblood", "plum", "forest", "random"];
+export function setTheme(theme) {
+  if (!COLOR_SCHEMES.includes(theme)) throw new Error("Unknown color scheme");
+  return setDoc(home(), { theme }, { merge: true });
+}
 export const setLive = live => setDoc(home(), { live: { ...live, at: serverTimestamp() } }, { merge: true });
 export async function getPending() {
   return rows(await getDocs(query(stories(), where("status", "==", "pending"), limit(60)))).sort(newest("createdAt"));

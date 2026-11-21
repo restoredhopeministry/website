@@ -104,6 +104,20 @@
     <button class="btn quiet" type="button" id="recheck">Check again</button>
   </div>
 
+  <h2>Website colors</h2>
+  <form class="card" id="theme-form">
+    <p>Choose the colors everyone will see, or choose Random to pick one of the three each time the site loads. It can take up to three minutes for the new colors to show when someone opens or refreshes the site.</p>
+    <label for="site-theme">Color scheme</label>
+    <select id="site-theme" disabled>
+      <option value="oxblood">Red (#D81F26)</option>
+      <option value="plum">Royal Purple (#914CC5)</option>
+      <option value="forest">Emerald Green (#19A66C)</option>
+      <option value="random">Random (all three colors)</option>
+    </select>
+    <button class="btn" type="submit" id="theme-save" disabled>Save website colors</button>
+    <p class="msg" id="theme-msg" role="status"></p>
+  </form>
+
   <h2>Today's word</h2>
   <form class="card" id="word-form">
     <div class="now" id="word-now" hidden><q id="word-now-text"></q><cite id="word-now-ref"></cite></div>
@@ -253,7 +267,7 @@
 </div>
 
 <script type="module">
-import { app, ADMIN_EMAIL, TAGS, ytId, ytEmbed, getHome, getStories, getPending, setWord, setLive, approveStory, removeStory, addStory } from "./data.js";
+import { app, ADMIN_EMAIL, TAGS, ytId, ytEmbed, getHome, getStories, getPending, setWord, setLive, COLOR_SCHEMES, setTheme, approveStory, removeStory, addStory } from "./data.js?v=2";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
 const $ = id => document.getElementById(id);
@@ -286,6 +300,8 @@ onAuthStateChanged(auth, async user => {
   $("desk").hidden = !user;
   if (!user) { if ($("gate-msg").textContent === "Checking…") $("gate-msg").textContent = ""; return; }
   $("me").textContent = user.email;
+
+  $("theme-msg").textContent = "Loading website colors…";
   check(); loadHome(); loadPending(); loadApproved();
 });
 
@@ -323,7 +339,42 @@ function showHome(h) {
   $("live-state").textContent = on ? "A live stream is showing on the website right now." : "You are not showing a live stream on the website.";
   $("live-end").hidden = !on;
 }
-async function loadHome() { try { showHome(await getHome()); } catch (e) { $("word-msg").textContent = "Couldn't load what's on the website. Check your internet and reload this page."; } }
+async function loadHome() {
+  try {
+    const h = await getHome();
+    showHome(h);
+    if ($("site-theme").disabled && !$("theme-form").dataset.saving) {
+      $("site-theme").value = COLOR_SCHEMES.includes(h.theme) ? h.theme : "oxblood";
+      $("site-theme").disabled = $("theme-save").disabled = false;
+      $("theme-msg").textContent = "";
+    }
+  } catch {
+    $("word-msg").textContent = "Couldn't load what's on the website. Check your internet and reload this page.";
+    if ($("site-theme").disabled && !$("theme-form").dataset.saving) {
+      $("theme-msg").textContent = "Couldn't load the colors. Reload the page to try again.";
+    }
+  }
+}
+
+$("theme-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const picker = $("site-theme");
+  if (picker.disabled || auth.currentUser?.email !== ADMIN_EMAIL) return;
+  const theme = picker.value;
+  const form = e.currentTarget;
+  form.dataset.saving = "true";
+  picker.disabled = $("theme-save").disabled = true;
+  $("theme-msg").textContent = "Saving…";
+  try {
+    await setTheme(theme);
+    $("theme-msg").textContent = "Saved. The new colors can take up to three minutes to appear.";
+  } catch {
+    $("theme-msg").textContent = failed;
+  } finally {
+    delete form.dataset.saving;
+    picker.disabled = $("theme-save").disabled = false;
+  }
+});
 
 $("word-form").addEventListener("submit", async e => {
   e.preventDefault();
