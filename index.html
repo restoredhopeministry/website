@@ -165,7 +165,7 @@
   /* Forms */
   label.f { display: block; font: 600 13px/1 var(--label); letter-spacing: .16em; text-transform: uppercase; margin: 16px 0 8px; }
   label.f:first-child { margin-top: 0; }
-  input[type=text], input[type=email], input[type=tel], textarea {
+  input[type=text], input[type=email], input[type=tel], input[type=url], select, textarea {
     width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--line);
     border-radius: 10px; padding: 13px 14px; font: inherit;
   }
@@ -189,10 +189,26 @@
   .empty { text-align: center; color: var(--muted); padding: 28px 16px; }
 
   /* Stories */
-  .story { display: grid; grid-template-columns: 104px 1fr; gap: 14px; align-items: center; padding: 12px; }
-  .thumb { aspect-ratio: 4/5; border-radius: 10px; display: grid; place-items: center; background: radial-gradient(circle at 50% 35%, #3a2a2a, #121214 75%); border: 1px solid var(--line); }
+  .story { padding: 12px; }
+  .thumb { position: relative; display: grid; place-items: center; width: 100%; aspect-ratio: 16/9; padding: 0; overflow: hidden; border-radius: 10px; background: radial-gradient(circle at 50% 35%, #3a2a2a, #121214 75%) center / cover; border: 1px solid var(--line); cursor: pointer; }
+  .thumb::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.28); }
+  .thumb svg { position: relative; width: 58px; height: 58px; padding: 14px; border-radius: 50%; background: var(--red); }
+  .player { aspect-ratio: 16/9; border-radius: 10px; overflow: hidden; background: #000; }
+  .player iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .story .body { padding: 12px 4px 2px; }
   .story h4 { margin: 0 0 4px; font: 600 17px/1.25 var(--body); }
   .story p { margin: 0; font-size: 14px; color: var(--muted); }
+  .story .by { margin-top: 6px; color: var(--text); }
+
+  /* Live */
+  .livepill { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 14px; padding: 8px 16px; border-radius: 999px; background: var(--red); color: #fff; text-decoration: none; font: 600 13px/1 var(--label); letter-spacing: .18em; text-transform: uppercase; }
+  .livepill i, .eyebrow i.dot { width: 9px; height: 9px; border-radius: 50%; background: #fff; animation: livePulse 1.4s ease-in-out infinite; }
+  .eyebrow i.dot { display: inline-block; margin-right: 8px; background: var(--red); }
+  @keyframes livePulse { 50% { opacity: .25; } }
+  @media (prefers-reduced-motion: reduce) { .livepill i, .eyebrow i.dot { animation: none; } }
+  #live { scroll-margin-top: 64px; }
+  .live h4 { margin: 0 0 12px; font: 600 18px/1.3 var(--body); }
+  [hidden] { display: none !important; }
   .tag { font: 600 11px/1 var(--label); letter-spacing: .2em; text-transform: uppercase; color: var(--red); display: block; margin-bottom: 6px; }
 
   /* Brush-titled cards, lists */
@@ -266,6 +282,7 @@
       <div class="ministry">Ministry</div>
       <h2>You are not forgotten. You are not alone.</h2>
       <p>There is hope beyond the hurt. There is life beyond the struggle. There is love through Jesus Christ.</p>
+      <a class="livepill" id="live-pill" href="#live" hidden><i></i>Live now · Watch</a>
       <a class="cta" href="#pray"><b>Let me pray with you</b><small>You don't have to carry it alone.</small></a>
       <div class="tiles">
         <a class="tile" href="#stories">
@@ -281,11 +298,19 @@
   </header>
 
   <main class="wrap">
+    <div class="block" id="live" hidden>
+      <p class="eyebrow"><i class="dot"></i>Live now</p>
+      <div class="card live">
+        <h4 id="live-title"></h4>
+        <div class="player" id="live-player"></div>
+      </div>
+    </div>
     <div class="block">
       <p class="eyebrow">Today's word</p>
       <div class="card votd">
         <blockquote id="votd-text"></blockquote>
         <cite id="votd-ref"></cite>
+        <p class="note" id="votd-note" hidden></p>
         <div class="row">
           <button class="ghost" id="share" type="button">Share this verse</button>
           <a class="ghost" href="#hope">Find a verse for what I'm facing</a>
@@ -398,6 +423,35 @@
   <p class="lede">Real people talking honestly about the darkest place they've been — and how Christ met them there. Pick what you're facing to find someone who's been there.</p>
   <div class="chips" id="story-chips"></div>
   <div class="stack two" id="story-list" style="margin-top:16px"></div>
+  <a class="card link" href="#share" style="margin-top:12px"><div><b>Share your story</b><span>Send us your testimony video</span></div><i>→</i></a>
+</div></div>
+
+<!-- ═════════ SHARE YOUR STORY ═════════ -->
+<div class="view" id="v-share"><div class="wrap">
+  <a class="back" href="#stories">← Stories</a>
+  <p class="eyebrow">Your testimony</p>
+  <h3 class="title">Share your story</h3>
+  <p class="lede">Someone is where you used to be. Record a short video about what you faced and how Christ met you there, then send us the link. We watch every video before it appears on this site.</p>
+  <form class="card" id="share-form">
+    <label class="f" for="sh-name">Your first name</label>
+    <input id="sh-name" type="text" required maxlength="60" autocomplete="given-name">
+    <label class="f" for="sh-title">A title for your story</label>
+    <input id="sh-title" type="text" required maxlength="80" placeholder="For example: Ten years sober">
+    <label class="f" for="sh-tag">What is it about?</label>
+    <select id="sh-tag" required></select>
+    <label class="f" for="sh-url">Link to your video on YouTube</label>
+    <input id="sh-url" type="url" required maxlength="200" placeholder="https://youtu.be/…" inputmode="url">
+    <p class="note">Upload your video to YouTube, set it to "Unlisted" if you don't want it on your own channel, then paste its link here.</p>
+    <label class="f" for="sh-note">A few words about it (optional)</label>
+    <textarea id="sh-note" maxlength="600" style="min-height:90px"></textarea>
+    <input id="sh-web" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+    <div class="check" style="align-items:flex-start">
+      <input id="sh-ok" type="checkbox" required style="margin-top:3px">
+      <label for="sh-ok">I am 18 or older, this is my own story, and I agree to it being shown publicly on this site. I can ask for it to be removed at any time.</label>
+    </div>
+    <button class="cta" type="submit" id="sh-btn"><b>Send my story</b></button>
+    <p class="note" id="sh-msg" style="text-align:center" role="status"></p>
+  </form>
 </div></div>
 
 <!-- ═════════ MORE ═════════ -->
@@ -687,9 +741,9 @@ const PLANS = [
       t: "Freedom is a gift Jesus gives. Walk in it one day at a time, and stay close to people who remind you who you are.", p: "Jesus, You've made me free. Help me live like it. Amen." } ] }
 ];
 
-// Replace these with real testimonies: add { tag, title, blurb, url } for each video.
-const STORIES = ["Addiction", "Depression", "Suicide", "Grief", "Shame", "Anxiety"].map(tag => (
-  { tag, title: "Story title goes here", blurb: "Add a one-line summary and link a testimony video.", url: "" }));
+// Testimonies, today's word and the live banner come from the ministry's database (see data.js).
+// They are published and approved from the Ministry Desk page, not edited here.
+const STORY_TAGS = ["Addiction", "Depression", "Suicide", "Grief", "Shame", "Anxiety", "Other"];
 
 const HELP = [
   ["Bible-teaching churches", "churches"],
@@ -744,7 +798,7 @@ const store = {
 })();
 
 /* ───────────── ROUTER ───────────── */
-const TAB_OF = { wall: "pray", plans: "more", steps: "more", help: "more", helper: "more", support: "more", qr: "more" };
+const TAB_OF = { wall: "pray", share: "stories", plans: "more", steps: "more", help: "more", helper: "more", support: "more", qr: "more" };
 const onShow = {};
 function route() {
   let [view, arg] = location.hash.slice(1).split("/");
@@ -759,10 +813,44 @@ window.addEventListener("hashchange", route);
 
 /* ───────────── TODAY'S WORD + SIGN-UP ───────────── */
 const today = CARRY[Math.floor(Date.now() / 864e5) % CARRY.length];
-$("votd-text").textContent = today.v;
-$("votd-ref").textContent = today.ref;
+let word = { v: today.v, ref: today.ref, note: "" };   // replaced by the ministry's own word when one is published
+function showWord() {
+  $("votd-text").textContent = word.v;
+  $("votd-ref").textContent = word.ref;
+  $("votd-note").textContent = word.note;
+  $("votd-note").hidden = !word.note;
+}
+showWord();
+
+/* ───────────── DATABASE: TODAY'S WORD + LIVE ───────────── */
+// data.js loads separately. If it can't (no connection), the site simply keeps its built-in content.
+let API = null;
+const data = new Promise(resolve => window.addEventListener("rh-data", e => { API = e.detail; resolve(API); }, { once: true }));
+const withTimeout = (p, ms) => Promise.race([p, new Promise((_, no) => setTimeout(() => no(new Error("timeout")), ms))]);
+function player(id, autoplay) {
+  const f = el("iframe");
+  f.src = `https://www.youtube-nocookie.com/embed/${id}?rel=0${autoplay ? "&autoplay=1" : ""}`;
+  f.title = "Video"; f.allow = "accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen"; f.allowFullscreen = true;
+  return f;
+}
+function applyHome(h) {
+  const w = h && h.word;
+  if (w && w.text) { word = { v: w.text, ref: w.ref || "", note: w.note || "" }; showWord(); }
+  const lv = h && h.live, on = !!(lv && lv.on && /^[\w-]{6,20}$/.test(lv.videoId || ""));
+  $("live").hidden = !on; $("live-pill").hidden = !on;
+  if (!on) { $("live-player").replaceChildren(); return; }
+  $("live-title").textContent = lv.title || "We're live right now. Join us.";
+  if (!$("live-player").firstChild) $("live-player").appendChild(player(lv.videoId, false));
+}
+$("live-pill").addEventListener("click", e => { e.preventDefault(); $("live").scrollIntoView({ behavior: "smooth", block: "start" }); });
+(function loadHome() {
+  const cached = store.get("rh_home", null);
+  if (cached && Date.now() - cached.t < 3 * 60e3) { applyHome(cached.d); return; }   // ask at most every 3 minutes
+  data.then(api => api.getHome()).then(h => { store.set("rh_home", { t: Date.now(), d: h }); applyHome(h); }).catch(() => {});
+})();
+
 $("share").addEventListener("click", async () => {
-  const text = `"${today.v}" — ${today.ref}`;
+  const text = `"${word.v}" — ${word.ref}`;
   try {
     if (navigator.share) await navigator.share({ text, url: location.href });
     else { await navigator.clipboard.writeText(text); $("share").textContent = "Copied"; }
@@ -842,8 +930,17 @@ $("wall-form").addEventListener("submit", e => {
 onShow.wall = arg => { wallKind = arg === "answered" ? "answered" : "requests"; renderWall(); };
 
 /* ───────────── STORIES ───────────── */
-const storyTags = ["All", ...new Set(STORIES.map(s => s.tag))];
+const storyTags = ["All", ...STORY_TAGS];
+let stories = null, storyState = "idle", storyTag;   // stories stay null until the database answers
+function loadStories() {
+  storyState = "loading";
+  withTimeout(data.then(api => api.getStories()), 12000)
+    .then(rows => { stories = rows; storyState = "ok"; })
+    .catch(() => { storyState = "error"; })
+    .finally(() => { if ($("v-stories").classList.contains("on")) renderStories(storyTag); });
+}
 function renderStories(tag) {
+  storyTag = tag;
   const match = storyTags.find(t => slug(t) === slug(tag || "all"));
   const active = match || "All";
   const sc = $("story-chips"); sc.replaceChildren();
@@ -852,15 +949,54 @@ function renderStories(tag) {
     b.addEventListener("click", () => renderStories(t)); sc.appendChild(b);
   });
   const list = $("story-list"); list.replaceChildren();
-  if (tag && !match) list.appendChild(el("div", "card empty", "No stories on that yet. Here is everything we have so far."));
-  STORIES.filter(s => active === "All" || s.tag === active).forEach(s => {
-    const card = el(s.url ? "a" : "article", "card story"); if (s.url) { card.href = s.url; card.style.textDecoration = "none"; }
-    const th = el("div", "thumb"); th.innerHTML = '<svg width="34" height="34" viewBox="0 0 24 24" fill="#f3f1ee"><path d="M8 5v14l11-7z"/></svg>';
-    const body = el("div"); body.append(el("span", "tag", s.tag), el("h4", "", s.title), el("p", "", s.blurb));
+  if (!stories) {
+    if (storyState === "idle") loadStories();
+    if (storyState === "error") {
+      const box = el("div", "card empty", "The stories couldn't load. Check your connection. ");
+      const again = el("button", "ghost", "Try again"); again.type = "button";
+      again.addEventListener("click", () => { loadStories(); renderStories(storyTag); });
+      box.appendChild(again); list.appendChild(box);
+    } else list.appendChild(el("div", "card empty", "Loading stories…"));
+    return;
+  }
+  const playable = stories.map(s => ({ ...s, vid: API.ytId(s.videoUrl) })).filter(s => s.vid);
+  const shown = playable.filter(s => active === "All" || s.tag === active);
+  if (!shown.length) {
+    list.appendChild(el("div", "card empty", playable.length ? "No stories on that yet. Choose All to see every story." : "Stories are on their way. Yours could be the first."));
+    return;
+  }
+  shown.forEach(s => {
+    const card = el("article", "card story");
+    const th = el("button", "thumb"); th.type = "button"; th.setAttribute("aria-label", "Play: " + s.title);
+    th.style.backgroundImage = `url(https://i.ytimg.com/vi/${s.vid}/hqdefault.jpg)`;
+    th.innerHTML = '<svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+    th.addEventListener("click", () => { const p = el("div", "player"); p.appendChild(player(s.vid, true)); th.replaceWith(p); });
+    const body = el("div", "body"); body.append(el("span", "tag", s.tag || "Story"), el("h4", "", s.title));
+    if (s.note) body.append(el("p", "", s.note));
+    body.append(el("p", "by", s.name));
     card.append(th, body); list.appendChild(card);
   });
 }
 onShow.stories = renderStories;
+
+/* ───────────── SHARE YOUR STORY ───────────── */
+STORY_TAGS.forEach(t => $("sh-tag").appendChild(new Option(t, t)));
+$("share-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const msg = $("sh-msg"), btn = $("sh-btn");
+  const videoUrl = $("sh-url").value.trim();
+  if ($("sh-web").value) { msg.textContent = "Thank you. We'll watch it soon."; return; }   // hidden field: only junk senders fill it
+  if (!API) { msg.textContent = "We can't reach the ministry right now. Check your connection and try again."; return; }
+  if (!API.ytId(videoUrl)) { msg.textContent = "That doesn't look like a YouTube link. Copy the link from YouTube's Share button and paste it here."; $("sh-url").focus(); return; }
+  btn.disabled = true; msg.textContent = "Sending…";
+  try {
+    await withTimeout(API.submitStory({ name: $("sh-name").value.trim(), title: $("sh-title").value.trim(), tag: $("sh-tag").value, note: $("sh-note").value.trim(), videoUrl }), 15000);
+    e.target.reset();
+    msg.textContent = "Thank you. Your story has been sent. We watch every video before it appears here.";
+  } catch (err) {
+    msg.textContent = "That didn't go through. Please try again in a moment.";
+  } finally { btn.disabled = false; }
+});
 
 /* ───────────── 7-DAY PLANS ───────────── */
 const progress = id => store.get("rh_plan_" + id, 0); // number of days completed
@@ -974,6 +1110,10 @@ const OPENING = 3;
 })();
 
 route();
+</script>
+<script type="module">
+  import * as api from "./data.js";
+  window.dispatchEvent(new CustomEvent("rh-data", { detail: api }));
 </script>
 </body>
 </html>

@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Ministry Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Oswald:wght@500;600&family=Permanent+Marker&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0b0c; --panel: #17171a; --line: #2a2a2f; --text: #f3f1ee; --dim: #b2aea8;
+    --red: #d81f26; --red-deep: #8f1217; --ok: #3fbf6b; --warn: #e0a526;
+    --brush: "Permanent Marker", "Segoe Print", cursive;
+    --label: "Oswald", "Arial Narrow", sans-serif;
+    --body: "Inter", "Segoe UI", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 18px/1.55 var(--body); }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+  header { text-align: center; padding: 20px 0 8px; }
+  header h1 { font: 400 40px/1.1 var(--brush); margin: 0; }
+  header h1 span { color: var(--red); }
+  header p { color: var(--dim); margin: 8px 0 0; }
+  h2 { font: 600 15px var(--label); letter-spacing: .14em; text-transform: uppercase; color: var(--dim); margin: 40px 0 12px; }
+  h2 .count { display: inline-block; min-width: 26px; margin-left: 8px; padding: 2px 8px; border-radius: 999px; background: var(--red); color: #fff; text-align: center; letter-spacing: 0; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-bottom: 12px; }
+  .card h3 { margin: 0 0 4px; font: 600 20px var(--body); }
+  .card p { margin: 0 0 14px; color: var(--dim); }
+  .card p:last-child { margin-bottom: 0; }
+  .card b, details b { color: var(--text); font-weight: 600; }
+  .btn { display: block; width: 100%; text-align: center; text-decoration: none; cursor: pointer;
+    font: 600 18px var(--label); letter-spacing: .06em; text-transform: uppercase;
+    padding: 16px 18px; border-radius: 12px; border: 2px solid var(--red); background: var(--red); color: #fff; }
+  .btn:hover, .btn:focus-visible { background: var(--red-deep); border-color: var(--red-deep); outline: none; }
+  .btn.quiet { background: transparent; color: var(--text); border-color: var(--line); }
+  .btn.quiet:hover, .btn.quiet:focus-visible { border-color: var(--text); background: transparent; }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .row { display: grid; gap: 10px; }
+  @media (min-width: 560px) { .row.two { grid-template-columns: 1fr 1fr; } }
+  label { display: block; font: 600 14px var(--label); letter-spacing: .1em; text-transform: uppercase; margin: 16px 0 6px; }
+  label:first-child { margin-top: 0; }
+  label small { font: 400 14px var(--body); letter-spacing: 0; text-transform: none; color: var(--dim); }
+  input[type=text], input[type=url], select, textarea { width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 10px; padding: 14px; font: inherit; }
+  textarea { min-height: 110px; resize: vertical; }
+  form .btn, .actions { margin-top: 16px; }
+  .msg { margin: 12px 0 0 !important; min-height: 1.4em; font-size: 16px; color: var(--text) !important; }
+  .now { border-left: 4px solid var(--red); padding: 4px 0 4px 14px; margin: 0 0 16px; }
+  .now q { display: block; quotes: none; color: var(--text); }
+  .now cite { color: var(--dim); font-style: normal; }
+  .status { display: flex; align-items: center; gap: 14px; }
+  .light { flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--warn); box-shadow: 0 0 14px currentColor; color: var(--warn); }
+  .light.up { background: var(--ok); color: var(--ok); }
+  .light.down { background: var(--red); color: var(--red); }
+  .status strong { display: block; font-size: 20px; }
+  .status small, .who { color: var(--dim); font-size: 15px; }
+  .who { margin-top: 10px; }
+  .player { aspect-ratio: 16/9; border-radius: 10px; overflow: hidden; background: #000; margin: 12px 0; }
+  .player iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .tag { font: 600 12px var(--label); letter-spacing: .16em; text-transform: uppercase; color: var(--red); }
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; margin-bottom: 10px; }
+  summary { cursor: pointer; padding: 16px 44px 16px 18px; font-weight: 600; list-style: none; position: relative; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; position: absolute; right: 18px; top: 12px; font-size: 26px; color: var(--red); }
+  details[open] summary::after { content: "–"; }
+  details > div, details > form { padding: 0 18px 18px; color: var(--dim); }
+  details div p { margin: 0 0 10px; }
+  .urgent { border-color: var(--red); }
+  footer { margin-top: 40px; text-align: center; color: var(--dim); font-size: 14px; }
+  footer button { background: none; border: 0; color: var(--dim); font: inherit; text-decoration: underline; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Ministry <span>Desk</span></h1>
+  <p>Everything for Restored Hope Ministry, in one place.</p>
+</header>
+
+<!-- ═════ Sign in ═════ -->
+<section id="gate">
+  <div class="card" style="margin-top:28px">
+    <h3>Sign in to manage the website</h3>
+    <p>Use the ministry's Google account. Only that account can publish to the website.</p>
+    <button class="btn" type="button" id="signin">Sign in with Google</button>
+    <p class="msg" id="gate-msg" role="status">Checking…</p>
+  </div>
+</section>
+
+<!-- ═════ The desk (only shown to the ministry's account) ═════ -->
+<section id="desk" hidden>
+
+  <h2>Is the website working?</h2>
+  <div class="card">
+    <div class="status">
+      <span class="light" id="light"></span>
+      <div><strong id="statusText">Checking…</strong><small id="statusNote">Looking at restoredhopeministry.com</small></div>
+    </div>
+  </div>
+  <div class="row two">
+    <a class="btn quiet" href="https://restoredhopeministry.com/" target="_blank" rel="noopener">Open the website</a>
+    <button class="btn quiet" type="button" id="recheck">Check again</button>
+  </div>
+
+  <h2>Today's word</h2>
+  <form class="card" id="word-form">
+    <div class="now" id="word-now" hidden><q id="word-now-text"></q><cite id="word-now-ref"></cite></div>
+    <p id="word-none">Nothing of yours is posted right now. The website is showing one of its built-in verses.</p>
+    <label for="w-ref">Where it's from <small>(for example: Psalm 34:18)</small></label>
+    <input id="w-ref" type="text" maxlength="80">
+    <label for="w-text">The verse or word</label>
+    <textarea id="w-text" required maxlength="700"></textarea>
+    <label for="w-note">A note from you <small>(optional)</small></label>
+    <input id="w-note" type="text" maxlength="300">
+    <button class="btn" type="submit">Put it on the website</button>
+    <button class="btn quiet" type="button" id="word-clear" style="margin-top:10px" hidden>Take it down</button>
+    <p class="msg" id="word-msg" role="status"></p>
+  </form>
+
+  <h2>Live stream</h2>
+  <form class="card" id="live-form">
+    <p id="live-state">You are not showing a live stream on the website.</p>
+    <label for="l-url">Link to your YouTube live stream</label>
+    <input id="l-url" type="url" placeholder="https://youtube.com/live/…">
+    <label for="l-title">A line to show above it <small>(optional)</small></label>
+    <input id="l-title" type="text" maxlength="120" placeholder="Praying together tonight">
+    <button class="btn" type="submit">Show it on the website</button>
+    <button class="btn quiet" type="button" id="live-end" style="margin-top:10px" hidden>Stop showing it</button>
+    <p class="msg" id="live-msg" role="status"></p>
+  </form>
+
+  <h2>Testimonies waiting for you <span class="count" id="pending-count">0</span></h2>
+  <div id="pending"></div>
+
+  <details>
+    <summary>Add a testimony video yourself</summary>
+    <form id="add-form">
+      <p>For videos the ministry filmed. These go straight onto the website.</p>
+      <label for="a-name">Whose story is it?</label>
+      <input id="a-name" type="text" required maxlength="60">
+      <label for="a-title">Title</label>
+      <input id="a-title" type="text" required maxlength="80">
+      <label for="a-tag">What is it about?</label>
+      <select id="a-tag"></select>
+      <label for="a-url">YouTube link</label>
+      <input id="a-url" type="url" required>
+      <label for="a-note">A few words about it <small>(optional)</small></label>
+      <input id="a-note" type="text" maxlength="600">
+      <button class="btn" type="submit">Add it to the website</button>
+      <p class="msg" id="add-msg" role="status"></p>
+    </form>
+  </details>
+
+  <h2>Testimonies on the website <span class="count" id="live-count">0</span></h2>
+  <div id="approved"></div>
+
+  <h2>Prayer requests</h2>
+  <div class="card">
+    <h3>They arrive as email</h3>
+    <p>Each request comes to the ministry inbox with the subject <b>Prayer request</b>. Look in the <b>Spam</b> folder too. New senders sometimes land there.</p>
+    <a class="btn quiet" href="https://mail.yahoo.com/" target="_blank" rel="noopener">Open the prayer inbox</a>
+  </div>
+  <div class="card urgent">
+    <h3>If someone sounds like they may hurt themselves</h3>
+    <p>Reply right away and give them <b>988</b>, the Suicide and Crisis Lifeline. They can call or text it, any hour. If they are in danger right now, tell them to call <b>911</b>.</p>
+  </div>
+
+  <h2>Sharing the website</h2>
+  <div class="row two">
+    <a class="btn quiet" href="https://restoredhopeministry.com/#qr" target="_blank" rel="noopener">Get the QR code</a>
+    <a class="btn quiet" href="https://restoredhopeministry.com/#pray" target="_blank" rel="noopener">See the prayer page</a>
+  </div>
+
+  <h2>Dates to remember</h2>
+  <div class="card">
+    <h3>The website address renews on November 21, 2027</h3>
+    <p id="renewNote">It is set up at Porkbun. If it is not renewed, the website stops working and someone else can take the name.</p>
+    <a class="btn quiet" href="https://porkbun.com/account/domainsSpeedy" target="_blank" rel="noopener">Check the renewal</a>
+  </div>
+
+  <h2>Your accounts</h2>
+  <div class="card">
+    <h3>Porkbun: the website's name</h3>
+    <p>Where <b>restoredhopeministry.com</b> is paid for, once a year. You only need it at renewal time.</p>
+    <a class="btn quiet" href="https://porkbun.com/account/domainsSpeedy" target="_blank" rel="noopener">Open Porkbun</a>
+  </div>
+  <div class="card">
+    <h3>YouTube: your videos and live streams</h3>
+    <p>Where testimony videos are uploaded and where you go live.</p>
+    <a class="btn quiet" href="https://studio.youtube.com/" target="_blank" rel="noopener">Open YouTube Studio</a>
+  </div>
+  <div class="card">
+    <h3>Render, GitHub and Firebase: behind the scenes</h3>
+    <p>These keep the website running and store what you publish. You should not need to open them. Your helper looks after them.</p>
+  </div>
+  <div class="card">
+    <h3>Passwords</h3>
+    <p>They are not kept on this page, on purpose. Keep them written down somewhere safe, or in a password manager. Never send a password by email or text.</p>
+  </div>
+
+  <h2>How do I…?</h2>
+  <details>
+    <summary>Go live</summary>
+    <div>
+      <p><b>1.</b> Start your live stream on YouTube.</p>
+      <p><b>2.</b> On YouTube, press <b>Share</b> and copy the link.</p>
+      <p><b>3.</b> Paste it under <b>Live stream</b> on this page and press <b>Show it on the website</b>.</p>
+      <p><b>4.</b> When you finish, press <b>Stop showing it</b>.</p>
+    </div>
+  </details>
+  <details>
+    <summary>Approve a testimony</summary>
+    <div>
+      <p>New stories appear under <b>Testimonies waiting for you</b>. Watch the whole video first. Press <b>Approve</b> to put it on the website, or <b>Decline</b> to remove it. Nobody else can see a story until you approve it.</p>
+    </div>
+  </details>
+  <details>
+    <summary>Change something else on the website</summary>
+    <div><p>Write down what you want changed, with the exact words, and send it to your helper. It shows up on the website a minute or two after they make the change.</p></div>
+  </details>
+  <details>
+    <summary>The website is not working</summary>
+    <div>
+      <p><b>1.</b> Press <b>Check again</b> at the top of this page.</p>
+      <p><b>2.</b> If the light is still red, open any other website to check your own internet.</p>
+      <p><b>3.</b> If only the ministry website is down, contact your helper and tell them when you noticed.</p>
+    </div>
+  </details>
+  <details>
+    <summary>Someone says they sent a prayer request and I never got it</summary>
+    <div><p>Check the <b>Spam</b> folder first. The prayer page opens the person's own email app, so if they closed it without pressing Send, nothing was sent. Ask them to try again, or to email the ministry directly.</p></div>
+  </details>
+  <details>
+    <summary>I got an email saying a payment failed or the domain is expiring</summary>
+    <div><p>Do not click links in the email. Open Porkbun from the button on this page and look there. If Porkbun shows a problem, update the payment card there. If it shows nothing wrong, the email was a scam and you can delete it.</p></div>
+  </details>
+
+  <h2>Who to call</h2>
+  <div class="card">
+    <h3>Your helper</h3>
+    <p>For anything this page does not cover: <b>name and phone number go here</b></p>
+  </div>
+
+  <footer>Signed in as <span id="me"></span> · <button type="button" id="signout">Sign out</button></footer>
+</section>
+</div>
+
+<script type="module">
+import { app, ADMIN_EMAIL, TAGS, ytId, ytEmbed, getHome, getStories, getPending, setWord, setLive, approveStory, removeStory, addStory } from "./data.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+const $ = id => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const auth = getAuth(app);
+
+/* ── Signing in ── */
+$("signin").addEventListener("click", async () => {
+  $("gate-msg").textContent = "Opening Google…";
+  try {
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
+    await signInWithPopup(auth, provider);
+  } catch (e) {
+    $("gate-msg").textContent =
+      e.code === "auth/popup-blocked" ? "Your browser blocked the sign-in window. Allow pop-ups for this page, then try again." :
+      e.code === "auth/popup-closed-by-user" || e.code === "auth/cancelled-popup-request" ? "The sign-in window was closed. Press the button to try again." :
+      "Sign-in didn't work. Check your internet and try again.";
+  }
+});
+$("signout").addEventListener("click", () => signOut(auth));
+onAuthStateChanged(auth, async user => {
+  if (user && user.email !== ADMIN_EMAIL) {
+    const wrong = user.email;
+    await signOut(auth);
+    $("gate-msg").textContent = `${wrong} can't manage the website. Sign in with the ministry's Google account.`;
+    return;
+  }
+  $("gate").hidden = !!user;
+  $("desk").hidden = !user;
+  if (!user) { if ($("gate-msg").textContent === "Checking…") $("gate-msg").textContent = ""; return; }
+  $("me").textContent = user.email;
+  check(); loadHome(); loadPending(); loadApproved();
+});
+
+/* ── Is the website up? Loads a picture from it. ── */
+function check() {
+  const light = $("light"), text = $("statusText"), note = $("statusNote");
+  light.className = "light"; text.textContent = "Checking…"; note.textContent = "Looking at restoredhopeministry.com";
+  const img = new Image(); let settled = false;
+  const done = up => {
+    if (settled) return; settled = true;
+    const when = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    light.className = "light " + (up ? "up" : "down");
+    text.textContent = up ? "The website is working" : "The website is not answering";
+    note.textContent = "Checked at " + when + (up ? "" : ". See “The website is not working” below.");
+  };
+  img.onload = () => done(true); img.onerror = () => done(false);
+  setTimeout(() => done(false), 12000);
+  img.src = "https://restoredhopeministry.com/images/cross.jpg?check=" + Date.now();
+}
+$("recheck").addEventListener("click", check);
+
+const days = Math.ceil((new Date(2027, 10, 21) - new Date()) / 86400000);
+const renew = $("renewNote");
+if (days < 0) renew.textContent = "That date has passed. Open Porkbun now and make sure the address was renewed.";
+else if (days <= 60) renew.textContent = "That is " + days + " days away. Open Porkbun and make sure the payment card is up to date.";
+else renew.textContent = "That is " + days + " days away. " + renew.textContent;
+
+/* ── Today's word and the live stream ── */
+const failed = "That didn't save. Check your internet and try again.";
+function showHome(h) {
+  const w = h.word, has = !!(w && w.text);
+  $("word-now").hidden = !has; $("word-none").hidden = has; $("word-clear").hidden = !has;
+  if (has) { $("word-now-text").textContent = w.text; $("word-now-ref").textContent = [w.ref, w.note].filter(Boolean).join(" · "); }
+  const on = !!(h.live && h.live.on);
+  $("live-state").textContent = on ? "A live stream is showing on the website right now." : "You are not showing a live stream on the website.";
+  $("live-end").hidden = !on;
+}
+async function loadHome() { try { showHome(await getHome()); } catch (e) { $("word-msg").textContent = "Couldn't load what's on the website. Check your internet and reload this page."; } }
+
+$("word-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  $("word-msg").textContent = "Saving…";
+  try {
+    await setWord({ ref: $("w-ref").value.trim(), text: $("w-text").value.trim(), note: $("w-note").value.trim() });
+    e.target.reset(); await loadHome();
+    $("word-msg").textContent = "It's on the website. Visitors will see it within a few minutes.";
+  } catch (err) { $("word-msg").textContent = failed; }
+});
+$("word-clear").addEventListener("click", async () => {
+  if (!confirm("Take your word down? The website will go back to its built-in verses.")) return;
+  try { await setWord(null); await loadHome(); $("word-msg").textContent = "Taken down."; } catch (err) { $("word-msg").textContent = failed; }
+});
+
+$("live-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const videoId = ytId($("l-url").value);
+  if (!videoId) { $("live-msg").textContent = "That doesn't look like a YouTube link. On YouTube press Share, copy the link, and paste it here."; return; }
+  $("live-msg").textContent = "Saving…";
+  try {
+    await setLive({ on: true, videoId, title: $("l-title").value.trim() });
+    await loadHome();
+    $("live-msg").textContent = "It's showing on the website. Remember to press Stop showing it when you finish.";
+  } catch (err) { $("live-msg").textContent = failed; }
+});
+$("live-end").addEventListener("click", async () => {
+  try { await setLive({ on: false }); $("live-form").reset(); await loadHome(); $("live-msg").textContent = "The live stream is no longer on the website."; } catch (err) { $("live-msg").textContent = failed; }
+});
+
+/* ── Testimonies ── */
+TAGS.forEach(t => $("a-tag").appendChild(new Option(t, t)));
+function storyCard(s, buttons) {
+  const card = el("div", "card");
+  card.append(el("span", "tag", s.tag || "Story"), el("h3", "", s.title || "(no title)"));
+  const id = ytId(s.videoUrl);
+  if (id) {
+    const p = el("div", "player"), f = el("iframe");
+    f.src = ytEmbed(id); f.title = "Testimony video"; f.loading = "lazy"; f.allow = "encrypted-media; picture-in-picture; fullscreen"; f.allowFullscreen = true;
+    p.appendChild(f); card.appendChild(p);
+  } else card.appendChild(el("p", "", "This story's video link isn't a YouTube link: " + (s.videoUrl || "none")));
+  card.appendChild(el("p", "", "From " + (s.name || "someone") + (s.note ? ". " + s.note : "")));
+  const row = el("div", "row two actions"); buttons.forEach(b => row.appendChild(b)); card.appendChild(row);
+  return card;
+}
+function button(text, quiet, onClick) {
+  const b = el("button", "btn" + (quiet ? " quiet" : ""), text); b.type = "button";
+  b.addEventListener("click", async () => { b.disabled = true; try { await onClick(); } catch (e) { alert(failed); b.disabled = false; } });
+  return b;
+}
+async function loadPending() {
+  const box = $("pending");
+  try {
+    const list = await getPending();
+    $("pending-count").textContent = list.length;
+    box.replaceChildren();
+    if (!list.length) { box.appendChild(el("div", "card", "Nothing is waiting. New stories from visitors will appear here.")); return; }
+    list.forEach(s => box.appendChild(storyCard(s, [
+      button("Approve", false, async () => { await approveStory(s.id); await loadPending(); await loadApproved(); }),
+      button("Decline", true, async () => { if (!confirm("Decline and delete this story? This can't be undone.")) throw 0; await removeStory(s.id); await loadPending(); })
+    ])));
+  } catch (e) { box.replaceChildren(el("div", "card", "Couldn't load the waiting stories. Check your internet and reload this page.")); }
+}
+async function loadApproved() {
+  const box = $("approved");
+  try {
+    const list = await getStories();
+    $("live-count").textContent = list.length;
+    box.replaceChildren();
+    if (!list.length) { box.appendChild(el("div", "card", "No testimonies are on the website yet.")); return; }
+    list.forEach(s => {
+      const d = el("details"); d.appendChild(el("summary", "", `${s.title || "(no title)"} · ${s.name || ""}`));
+      const inner = el("div");
+      inner.appendChild(storyCard(s, [button("Take it off the website", true, async () => { if (!confirm("Remove this testimony from the website? This can't be undone.")) throw 0; await removeStory(s.id); await loadApproved(); })]));
+      d.appendChild(inner); box.appendChild(d);
+    });
+  } catch (e) { box.replaceChildren(el("div", "card", "Couldn't load the testimonies. Check your internet and reload this page.")); }
+}
+$("add-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const videoUrl = $("a-url").value.trim();
+  if (!ytId(videoUrl)) { $("add-msg").textContent = "That doesn't look like a YouTube link."; return; }
+  $("add-msg").textContent = "Saving…";
+  try {
+    await addStory({ name: $("a-name").value.trim(), title: $("a-title").value.trim(), tag: $("a-tag").value, note: $("a-note").value.trim(), videoUrl });
+    e.target.reset(); await loadApproved();
+    $("add-msg").textContent = "It's on the website.";
+  } catch (err) { $("add-msg").textContent = failed; }
+});
+</script>
+</body>
+</html>
