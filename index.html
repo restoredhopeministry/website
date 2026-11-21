@@ -118,6 +118,14 @@
 
   /* Hero */
   .hero { position: relative; text-align: center; overflow: hidden; }
+  .home-links { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 12px 0; }
+  .home-links a {
+    display: inline-flex; align-items: center; justify-content: center; min-height: 44px;
+    border: 1px solid var(--line); border-radius: 8px; padding: 8px 14px;
+    color: var(--text); text-decoration: none; font: 600 14px/1.2 var(--label);
+  }
+  .home-links a:first-child { background: var(--accent-deep); border-color: var(--accent); }
+  .home-links a:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; }
   .sky {
     position: relative; height: 66vh; min-height: 440px; max-height: 740px; max-width: 640px; margin: 0 auto;
     overflow: hidden;
@@ -277,7 +285,13 @@
   .shirt-preview:not([data-shirt="gold"]) img { position: absolute; inset: 0 auto auto 0; }
   .shirt-preview[data-shirt="purple"] img { transform: translateY(-32.16%); }
   .shirt-preview[data-shirt="green"] img { transform: translateY(-64.65%); }
-  .shirt-preview figcaption { margin-top: 10px; color: var(--muted); }
+  .shirt-preview figcaption, .mug-preview figcaption { margin-top: 10px; color: var(--muted); }
+  .mug-preview { margin: 16px 0 0; }
+  .mug-frame { position: relative; overflow: hidden; width: min(100%, 360px); aspect-ratio: 1218 / 1292; border-radius: 10px; }
+  .mug-frame img { position: absolute; top: 0; left: 0; width: 200%; max-width: none; display: block; }
+  .mug-preview[data-mug="purple"] img { transform: translateX(-50%); }
+  .mug-preview[data-mug="green"] img { transform: translateY(-50%); }
+  .mug-preview[data-mug="gold"] img { transform: translate(-50%, -50%); }
   #qr { background: #fff; border-radius: 12px; padding: 12px; width: 220px; margin: 0 auto 14px; }
   #qr svg { display: block; width: 100%; height: auto; }
 
@@ -311,6 +325,10 @@
 <!-- ═════════ HOME ═════════ -->
 <div class="view" id="v-home">
   <header class="hero">
+    <div class="wrap home-links">
+      <a id="youtube-live" href="https://www.youtube.com/channel/UC-OnMYN_p-wZeBdWwId4DRg/streams" target="_blank" rel="noopener">YouTube / Live</a>
+      <a href="#share">Submit a video testimony</a>
+    </div>
     <div class="sky" aria-hidden="true">
       <div class="cross-art" aria-hidden="true"></div>
     </div>
@@ -326,9 +344,9 @@
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg>
           Real Stories
         </a>
-        <a class="tile" href="#support">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/></svg>
-          Support Us
+        <a class="tile" href="#shirts">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M8 4 3 7l-2 5 5 2 1-3v9h10v-9l1 3 5-2-2-5-5-3a4 4 0 0 1-8 0Z"/></svg>
+          Merch
         </a>
       </div>
     </div>
@@ -514,7 +532,8 @@
     <a class="card link" href="#helper"><div><b>For the one helping</b><span>How to pray with a hurting friend</span></div><i>→</i></a>
     <a class="card link" href="#wall"><div><b>Prayer wall</b><span>Ask for prayer and pray for others</span></div><i>→</i></a>
     <a class="card link" href="#wall/answered"><div><b>Answered prayers</b><span>What God has done</span></div><i>→</i></a>
-    <a class="card link" href="#support"><div><b>Support us</b><span>Get the shirt or give</span></div><i>→</i></a>
+    <a class="card link" href="#shirts"><div><b>Merch</b><span>See shirts and coffee mugs</span></div><i>→</i></a>
+    <a class="card link" href="#support"><div><b>Support us</b><span>Give to the ministry</span></div><i>→</i></a>
     <a class="card link" href="#qr"><div><b>Share this site</b><span>A code people can scan to ask for prayer</span></div><i>→</i></a>
   </div>
 </div></div>
@@ -637,7 +656,7 @@
     </svg>
     <p class="s" style="margin-bottom:16px">Every shirt starts a conversation. "Let me pray with you" is on the sleeve — so someone who needs it can ask.</p>
     <!-- Set these two links to your store and giving pages. -->
-    <a class="cta" href="#shirts"><b>See shirt colors</b></a>
+    <a class="cta" href="#shirts"><b>See merch</b></a>
     <div class="row" style="justify-content:center"><a class="ghost" href="#support">Give to the ministry</a></div>
   </div>
 </div></div>
@@ -646,9 +665,10 @@
 <div class="view" id="v-shirts"><div class="wrap">
   <a class="back" href="#support">← Support us</a>
   <p class="eyebrow">Restored Hope Ministry</p>
-  <h3 class="title">Restored Hope shirts</h3>
+  <h3 class="title">Merch</h3>
   <div class="card">
-    <label for="shirt-color">Shirt color</label>
+    <h4 class="b">Restored Hope shirts</h4>
+    <label for="shirt-color">Merch color</label>
     <select id="shirt-color">
       <option value="red">Red (#D81F26)</option>
       <option value="purple">Royal Purple (#914CC5)</option>
@@ -660,7 +680,14 @@
       <figcaption id="shirt-caption" aria-live="polite">Red (#D81F26)</figcaption>
     </figure>
   </div>
-  <p class="note">Shirt previews. Ordering is not open yet.</p>
+  <details class="card" style="margin-top:16px">
+    <summary>Restored Hope coffee mugs</summary>
+    <figure class="mug-preview" id="mug-preview" data-mug="red">
+      <div class="mug-frame"><img id="mug-mockup" src="images/coffee-mug-colorways.png" alt="Red Restored Hope coffee mug" loading="lazy"></div>
+      <figcaption id="mug-caption" aria-live="polite">Red (#D81F26)</figcaption>
+    </figure>
+  </details>
+  <p class="note">Merch previews. Ordering is not open yet.</p>
 </div></div>
 
 <!-- ═════════ QR ═════════ -->
@@ -877,6 +904,9 @@ shirtColor.addEventListener("change", () => {
   if (mockup.getAttribute("src") !== source) mockup.src = source;
   mockup.alt = option.textContent + " Restored Hope shirt, front, back and right sleeve";
   document.getElementById("shirt-caption").textContent = option.textContent;
+  document.getElementById("mug-preview").dataset.mug = shirtColor.value;
+  document.getElementById("mug-mockup").alt = option.textContent + " Restored Hope coffee mug";
+  document.getElementById("mug-caption").textContent = option.textContent;
 });
 
 const TAB_OF = { wall: "pray", share: "stories", plans: "more", steps: "more", help: "more", helper: "more", support: "more", shirts: "more", qr: "more" };
@@ -945,6 +975,11 @@ function applyHome(h) {
   showWord();
   const lv = h && h.live, on = !!(lv && lv.on && /^[\w-]{6,20}$/.test(lv.videoId || ""));
   $("live").hidden = !on; $("live-pill").hidden = !on;
+  const youtube = $("youtube-live");
+  youtube.href = on
+    ? "https://www.youtube.com/watch?v=" + lv.videoId
+    : "https://www.youtube.com/channel/UC-OnMYN_p-wZeBdWwId4DRg/streams";
+  youtube.textContent = on ? "YouTube / Watch live" : "YouTube / Live";
   if (!on) { $("live-player").replaceChildren(); return; }
   $("live-title").textContent = lv.title || "We're live right now. Join us.";
   if (!$("live-player").firstChild) $("live-player").appendChild(player(lv.videoId, false));
