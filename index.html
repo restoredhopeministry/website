@@ -1,0 +1,979 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Restored Hope Ministry</title>
+<meta name="description" content="You are not forgotten. You are not alone. Healing and hope through Jesus Christ and prayer.">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;600&family=Permanent+Marker&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0b;
+    --panel: #151517;
+    --panel-2: #1d1d20;
+    --line: #2b2b30;
+    --text: #f3f1ee;
+    --muted: #a9a6a1;
+    --red: #d81f26;
+    --red-deep: #8e0f14;
+    --glow: #f4d9a6;
+    --brush: "Permanent Marker", "Segoe Print", cursive;
+    --label: "Oswald", "Arial Narrow", sans-serif;
+    --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 400 17px/1.6 var(--body);
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--glow); outline-offset: 2px; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 0 16px; }
+  [hidden] { display: none !important; }
+
+  /* Opening (first visit of a session). Variants are built by the intro script. */
+  #intro { position: fixed; inset: 0; z-index: 100; background: #000; display: grid; place-items: center; text-align: center; overflow: hidden; cursor: pointer; transition: opacity .8s ease; }
+  #intro.out { opacity: 0; pointer-events: none; }
+  #intro .stage { position: relative; width: 100%; max-width: 640px; padding: 24px; }
+  #intro .big { margin: 0; font: 400 clamp(40px, 13vw, 84px)/1.05 var(--brush); text-wrap: balance; }
+  #intro .mid { margin: 0; font: 400 clamp(32px, 10vw, 64px)/1.1 var(--brush); text-wrap: balance; }
+  #intro .red { color: var(--red); text-shadow: 0 0 28px rgba(216,31,38,.55); margin-top: 10px; }
+  #intro .ref { display: block; margin-top: 18px; font: 600 14px/1 var(--label); letter-spacing: .3em; text-transform: uppercase; color: var(--glow); }
+  #intro .in { opacity: 0; animation: introWord 1.1s cubic-bezier(.2,.7,.2,1) var(--d, 0s) forwards; }
+  #intro .inout { opacity: 0; animation: introInOut var(--len, 2.6s) ease var(--d, 0s) forwards; }
+  #intro .hint { position: absolute; left: 0; right: 0; bottom: calc(28px + env(safe-area-inset-bottom)); font: 500 11px/1 var(--label); letter-spacing: .3em; text-transform: uppercase; color: #6d6a66; }
+  #intro .fill { position: absolute; inset: 0; }
+  @keyframes introWord { from { opacity: 0; transform: translateY(18px) scale(.96); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+  @keyframes introInOut { 0% { opacity: 0; transform: translateY(14px); } 22%, 76% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+  /* 0: light grows behind the words */
+  #intro .glow { position: absolute; left: 50%; top: 50%; width: 140vmax; height: 140vmax; border-radius: 50%; opacity: 0; background: radial-gradient(circle, rgba(255,255,255,.34), rgba(244,217,166,.1) 28%, transparent 58%); animation: introLight 4.2s ease-out .4s forwards; }
+  @keyframes introLight { 0% { opacity: 0; transform: translate(-50%,-50%) scale(.05); } 30% { opacity: 1; } 100% { opacity: 1; transform: translate(-50%,-50%) scale(1); } }
+  /* 1: the words fall away */
+  #intro .words { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 16px; }
+  #intro .words span { position: relative; font: 400 clamp(24px, 7.4vw, 44px)/1.25 var(--brush); color: #7d7873; opacity: 0; animation: introFade .6s ease var(--d) forwards, introFall .75s cubic-bezier(.5,0,.9,.4) var(--f) forwards; }
+  #intro .words span::after { content: ""; position: absolute; left: -5%; right: -5%; top: 50%; height: 4px; border-radius: 2px; background: var(--red); transform: rotate(-3deg) scaleX(0); transform-origin: left; animation: introStrike .22s ease-out var(--s) forwards; }
+  #intro .final { display: grid; place-items: center; padding: 24px; }
+  @keyframes introFade { to { opacity: 1; } }
+  @keyframes introFall { to { opacity: 0; transform: translateY(70vh) rotate(var(--r)); } }
+  @keyframes introStrike { to { transform: rotate(-3deg) scaleX(1); } }
+  /* 2: the stone rolls away */
+  #intro .tomb { position: relative; width: 58vmin; max-width: 280px; aspect-ratio: 1; margin: 0 auto 36px; }
+  #intro .tomb .light { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle, #fff 0%, #fbeecb 50%, #e9c98a 100%); box-shadow: 0 0 22px 2px rgba(244,217,166,.45); animation: introBloom 3s ease-in 1.2s forwards; }
+  #intro .tomb .stone { position: absolute; inset: 2.5%; border-radius: 50%; background: repeating-linear-gradient(118deg, transparent 0 22px, rgba(255,255,255,.035) 22px 24px), radial-gradient(circle at 34% 28%, #343437, #0b0b0c 72%); box-shadow: inset -10px -14px 30px #000; animation: introRoll 2.4s cubic-bezier(.6,0,.25,1) 1s forwards; }
+  @keyframes introRoll { to { transform: translateX(122%) rotate(150deg); } }
+  @keyframes introBloom { to { box-shadow: 0 0 120px 50px rgba(244,217,166,.6); } }
+  /* 3: lightning reveals the cross */
+  #intro .storm { background: url(images/cross.jpg) 50% 25% / cover; opacity: 0; animation: introStorm 3s linear .5s forwards; }
+  #intro .flash { background: #fff; opacity: 0; animation: introFlash 3s linear .5s forwards; }
+  #intro .scrim { background: linear-gradient(transparent 38%, #000 86%); }
+  #intro .low { position: absolute; left: 0; right: 0; bottom: 12vh; padding: 0 24px; }
+  @keyframes introStorm { 0%, 9% { opacity: 0; } 10% { opacity: .85; } 17% { opacity: 0; } 39% { opacity: 0; } 40% { opacity: 1; } 45% { opacity: .2; } 48% { opacity: .8; } 56% { opacity: 0; } 75% { opacity: 0; } 76%, 100% { opacity: 1; } }
+  @keyframes introFlash { 0%, 9% { opacity: 0; } 10% { opacity: .35; } 15% { opacity: 0; } 39% { opacity: 0; } 40% { opacity: .45; } 46% { opacity: 0; } 75% { opacity: 0; } 76% { opacity: .5; } 88%, 100% { opacity: 0; } }
+  #back-openings { position: fixed; left: 12px; bottom: calc(84px + env(safe-area-inset-bottom)); z-index: 50; background: var(--glow); color: #111; border-radius: 999px; padding: 10px 16px; font: 600 13px/1 var(--body); text-decoration: none; box-shadow: 0 6px 20px rgba(0,0,0,.6); }
+
+  /* Crisis strip — always visible */
+  .crisis {
+    position: sticky; top: 0; z-index: 30;
+    background: var(--red-deep); color: #fff;
+    font: 500 14px/1.3 var(--body); text-align: center; padding: 9px 12px;
+  }
+  .crisis a { font-weight: 600; text-underline-offset: 3px; white-space: nowrap; }
+
+  /* Views (one shown at a time) */
+  .view { display: none; }
+  .view.on { display: block; }
+  .view > .wrap { padding-top: 28px; }
+  .back { display: inline-block; margin-bottom: 14px; font: 500 13px/1 var(--label); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); text-decoration: none; }
+
+  /* Hero */
+  .hero { position: relative; text-align: center; overflow: hidden; }
+  .sky {
+    position: relative; height: 52vh; min-height: 340px; max-height: 560px; max-width: 640px; margin: 0 auto;
+    background:
+      radial-gradient(ellipse 55% 45% at 12% 30%, #2c2c30 0%, transparent 70%),
+      radial-gradient(ellipse 55% 40% at 90% 20%, #26262a 0%, transparent 70%),
+      radial-gradient(ellipse 70% 60% at 50% 40%, #34343a 0%, transparent 72%),
+      linear-gradient(#121214, #0a0a0b 92%);
+  }
+  .sky::after { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(transparent 55%, var(--bg) 97%), linear-gradient(90deg, var(--bg), transparent 7%, transparent 93%, var(--bg)); }
+  .sky img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; }
+  .hero-text { position: relative; z-index: 2; margin-top: -64px; padding-bottom: 8px; }
+  .brand { font: 400 clamp(44px, 13vw, 68px)/.95 var(--brush); margin: 0; letter-spacing: .5px; transform: rotate(-3deg); }
+  .brand span { color: var(--red); display: block; text-shadow: 0 0 22px rgba(216,31,38,.45); }
+  .ministry {
+    display: inline-block; font: 600 14px/1 var(--label); letter-spacing: .42em; text-transform: uppercase;
+    margin: 12px 0 0 .42em; padding-bottom: 8px; border-bottom: 3px solid var(--red);
+  }
+  .hero h2 { font: 600 clamp(22px, 6.2vw, 30px)/1.25 var(--body); margin: 26px 0 10px; text-wrap: balance; }
+  .hero p { color: var(--muted); margin: 0 auto 22px; max-width: 30em; text-wrap: pretty; }
+
+  /* Buttons & tiles */
+  .cta {
+    display: block; width: 100%; text-align: center; text-decoration: none;
+    background: linear-gradient(180deg, var(--red), var(--red-deep));
+    border: 0; border-radius: 14px; padding: 16px 18px;
+    box-shadow: 0 8px 28px rgba(216,31,38,.28);
+  }
+  .cta b { display: block; font: 400 24px/1.1 var(--brush); letter-spacing: .5px; }
+  .cta small { font-size: 14px; opacity: .9; }
+  .cta.plain { box-shadow: none; padding: 13px; font-weight: 600; }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+  .tile {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+    padding: 16px 10px; text-decoration: none; text-align: center;
+    font: 600 15px/1.2 var(--label); letter-spacing: .08em; text-transform: uppercase;
+  }
+  .tile svg { display: block; margin: 0 auto 8px; }
+  .tile small { display: block; margin-top: 6px; font: 400 13px/1.35 var(--body); letter-spacing: 0; text-transform: none; color: var(--muted); }
+
+  /* Type */
+  .block { padding-top: 48px; }
+  .eyebrow { font: 600 13px/1 var(--label); letter-spacing: .3em; text-transform: uppercase; color: var(--red); margin: 0 0 10px; }
+  h3.title { font: 400 clamp(30px, 8.5vw, 40px)/1.05 var(--brush); margin: 0 0 10px; }
+  .lede { color: var(--muted); margin: 0 0 20px; text-wrap: pretty; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
+  .stack { display: grid; gap: 12px; }
+  blockquote { margin: 0; font-size: 19px; line-height: 1.55; text-wrap: pretty; }
+  cite { display: block; margin-top: 12px; font: 600 14px/1 var(--label); letter-spacing: .16em; text-transform: uppercase; font-style: normal; color: var(--glow); }
+  .row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+  .ghost { background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 9px 16px; font-size: 14px; font-weight: 500; text-decoration: none; }
+  .ghost:hover { border-color: var(--muted); }
+  .votd { border-left: 4px solid var(--red); border-radius: 4px 16px 16px 4px; }
+  .note { font-size: 13px; color: var(--muted); margin: 12px 0 0; }
+  .preview { font-size: 13px; color: var(--glow); border: 1px dashed #5d5340; border-radius: 10px; padding: 10px 12px; margin: 0 0 16px; }
+
+  /* Chips */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    background: var(--panel-2); border: 1px solid var(--line); border-radius: 999px;
+    padding: 10px 16px; font: 500 15px/1 var(--label); letter-spacing: .1em; text-transform: uppercase;
+  }
+  .chip[aria-pressed="true"] { background: var(--red); border-color: var(--red); }
+  #answer { margin-top: 16px; }
+  .truth { margin: 16px 0 0; }
+  .prayer { margin: 16px 0 0; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-style: italic; }
+  .prayer b { display: block; font: 600 12px/1 var(--label); letter-spacing: .24em; text-transform: uppercase; color: var(--text); font-style: normal; margin-bottom: 8px; }
+  .urgent { margin-top: 16px; padding: 16px; border-radius: 12px; background: rgba(216,31,38,.12); border: 1px solid var(--red-deep); }
+  .urgent p { margin: 0 0 12px; }
+
+  /* Forms */
+  label.f { display: block; font: 600 13px/1 var(--label); letter-spacing: .16em; text-transform: uppercase; margin: 16px 0 8px; }
+  label.f:first-child { margin-top: 0; }
+  input[type=text], input[type=email], input[type=tel], textarea {
+    width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--line);
+    border-radius: 10px; padding: 13px 14px; font: inherit;
+  }
+  textarea { min-height: 120px; resize: vertical; }
+  .check { display: flex; gap: 10px; align-items: center; margin: 14px 0 18px; color: var(--muted); font-size: 15px; }
+  .check input { width: 20px; height: 20px; accent-color: var(--red); flex: none; }
+  .inline { display: flex; gap: 8px; }
+  .inline input { flex: 1; min-width: 0; }
+  .inline button { flex: none; background: var(--red); border: 0; border-radius: 10px; padding: 0 18px; font-weight: 600; }
+
+  /* Segmented control */
+  .seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 4px; margin-bottom: 16px; }
+  .seg button { background: none; border: 0; border-radius: 9px; padding: 10px; font: 600 14px/1 var(--label); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .seg button[aria-pressed="true"] { background: var(--panel-2); color: var(--text); }
+
+  /* Wall */
+  .post p { margin: 0 0 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .post .meta { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+  .prayed { background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 500; white-space: nowrap; }
+  .prayed[aria-pressed="true"] { border-color: var(--red); color: #fff; background: rgba(216,31,38,.16); }
+  .empty { text-align: center; color: var(--muted); padding: 28px 16px; }
+
+  /* Stories */
+  .story { display: grid; grid-template-columns: 104px 1fr; gap: 14px; align-items: center; padding: 12px; }
+  .thumb { aspect-ratio: 4/5; border-radius: 10px; display: grid; place-items: center; background: radial-gradient(circle at 50% 35%, #3a2a2a, #121214 75%); border: 1px solid var(--line); }
+  .story h4 { margin: 0 0 4px; font: 600 17px/1.25 var(--body); }
+  .story p { margin: 0; font-size: 14px; color: var(--muted); }
+  .tag { font: 600 11px/1 var(--label); letter-spacing: .2em; text-transform: uppercase; color: var(--red); display: block; margin-bottom: 6px; }
+
+  /* Brush-titled cards, lists */
+  .card h4.b { font: 400 24px/1.1 var(--brush); margin: 0 0 8px; }
+  .card p.s { margin: 0; color: var(--muted); font-size: 15px; }
+  .steps { counter-reset: s; display: grid; gap: 12px; }
+  .steps .card { position: relative; padding-left: 62px; }
+  .steps .card::before { counter-increment: s; content: counter(s); position: absolute; left: 18px; top: 16px; font: 400 32px/1 var(--brush); color: var(--red); }
+  .steps h4, .do h4 { margin: 0 0 6px; font: 600 17px/1.3 var(--body); }
+  .steps p, .do li { color: var(--muted); font-size: 15px; }
+  .steps p { margin: 0; }
+  .do ul { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
+  .do .say { color: var(--text); }
+  a.link { display: flex; justify-content: space-between; align-items: center; gap: 12px; text-decoration: none; }
+  a.link b { display: block; font-weight: 600; }
+  a.link span { color: var(--muted); font-size: 14px; }
+  a.link i { font-style: normal; color: var(--red); font-size: 22px; }
+
+  /* Plans */
+  .dots { display: flex; gap: 6px; margin: 0 0 16px; }
+  .dots button { flex: 1; height: 34px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); font: 600 13px/1 var(--label); color: var(--muted); }
+  .dots button.done { background: rgba(216,31,38,.18); border-color: var(--red-deep); color: var(--text); }
+  .dots button[aria-current="true"] { border-color: var(--text); color: var(--text); }
+  .bar { height: 6px; background: var(--panel-2); border-radius: 3px; margin-top: 12px; overflow: hidden; }
+  .bar i { display: block; height: 100%; background: var(--red); }
+
+  .shirt { text-align: center; }
+  .shirt svg { width: 150px; margin: 4px auto 12px; display: block; }
+  #qr { background: #fff; border-radius: 12px; padding: 12px; width: 220px; margin: 0 auto 14px; }
+  #qr svg { display: block; width: 100%; height: auto; }
+
+  footer { text-align: center; color: var(--muted); font-size: 13px; padding: 56px 16px 24px; }
+  footer .brush { font: 400 22px/1 var(--brush); color: var(--text); display: block; margin-bottom: 10px; }
+
+  /* Bottom nav */
+  nav.tabs {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+    background: rgba(12,12,13,.94); backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line);
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  nav.tabs a {
+    display: grid; justify-items: center; gap: 4px; padding: 10px 2px 9px; text-decoration: none;
+    font: 500 10.5px/1 var(--label); letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+  }
+  nav.tabs a[aria-current="page"] { color: #fff; }
+  nav.tabs a.pray svg { color: var(--red); }
+
+  @media (min-width: 700px) {
+    .two { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div id="intro" hidden role="presentation"></div>
+
+<div class="crisis" role="note">
+  Thinking about ending your life? You matter. <a href="tel:988">Call or text 988</a> — free, 24/7 (US)
+</div>
+
+<!-- ═════════ HOME ═════════ -->
+<div class="view" id="v-home">
+  <header class="hero">
+    <div class="sky" aria-hidden="true">
+      <img src="images/cross.jpg" alt="">
+    </div>
+    <div class="wrap hero-text">
+      <h1 class="brand">Restored <span>Hope</span></h1>
+      <div class="ministry">Ministry</div>
+      <h2>You are not forgotten. You are not alone.</h2>
+      <p>There is hope beyond the hurt. There is life beyond the struggle. There is love through Jesus Christ.</p>
+      <a class="cta" href="#pray"><b>Let me pray with you</b><small>You don't have to carry it alone.</small></a>
+      <div class="tiles">
+        <a class="tile" href="#stories">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg>
+          Real Stories
+        </a>
+        <a class="tile" href="#support">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/></svg>
+          Support Us
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="block">
+      <p class="eyebrow">Today's word</p>
+      <div class="card votd">
+        <blockquote id="votd-text"></blockquote>
+        <cite id="votd-ref"></cite>
+        <div class="row">
+          <button class="ghost" id="share" type="button">Share this verse</button>
+          <a class="ghost" href="#hope">Find a verse for what I'm facing</a>
+        </div>
+      </div>
+      <form class="card" id="signup" style="margin-top:12px">
+        <label class="f" for="su-email">Get a verse and a prayer every morning</label>
+        <div class="inline">
+          <input id="su-email" type="email" required autocomplete="email" placeholder="Your email">
+          <button type="submit">Sign up</button>
+        </div>
+        <p class="note" id="su-msg">One short email a day. Unsubscribe any time.</p>
+      </form>
+    </div>
+
+    <div class="block">
+      <p class="eyebrow">Keep going</p>
+      <h3 class="title">Where do you need to start?</h3>
+      <div class="tiles" style="margin-top:0">
+        <a class="tile" href="#wall">Prayer wall<small>Ask, and pray for others</small></a>
+        <a class="tile" href="#plans">7-day plans<small>One screen a day</small></a>
+        <a class="tile" href="#steps">Next steps<small>I prayed. Now what?</small></a>
+        <a class="tile" href="#help">Find help near me<small>Churches, groups, counselors</small></a>
+      </div>
+    </div>
+
+    <div class="block">
+      <p class="eyebrow">The fight is real</p>
+      <h3 class="title">Stand on this</h3>
+      <div class="stack two">
+        <div class="card"><h4 class="b">The Lord is close to the brokenhearted</h4><p class="s">God doesn't wait for you to get it together. He moves toward the broken.</p><cite>Psalm 34:18</cite></div>
+        <div class="card"><h4 class="b">We wrestle not against flesh and blood</h4><p class="s">The battle in your mind is spiritual — and you were never meant to fight it in your own strength.</p><cite>Ephesians 6:12</cite></div>
+        <div class="card"><h4 class="b">Capture your thoughts</h4><p class="s">Not every thought is yours to keep. Bring each one to Christ and hold it up against what He says is true.</p><cite>2 Corinthians 10:5</cite></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ═════════ FIND HOPE ═════════ -->
+<div class="view" id="v-hope"><div class="wrap">
+  <p class="eyebrow">Find hope</p>
+  <h3 class="title">What are you carrying?</h3>
+  <p class="lede">Tap what's weighing on you. There's a word from God for it — and a prayer you can pray right now.</p>
+  <div class="chips" id="chips"></div>
+  <div class="card" id="answer" hidden aria-live="polite">
+    <blockquote id="a-verse"></blockquote>
+    <cite id="a-ref"></cite>
+    <p class="truth" id="a-truth"></p>
+    <div class="urgent" id="a-urgent" hidden>
+      <p><strong>Please don't walk through this alone tonight.</strong> If you're thinking about ending your life, talk to someone right now. The 988 Suicide &amp; Crisis Lifeline is free, confidential, and open 24/7 in the US. If you're in immediate danger, call 911.</p>
+      <a class="cta plain" href="tel:988">Call or text 988 now</a>
+    </div>
+    <p class="prayer"><b>Pray this</b><span id="a-prayer"></span></p>
+    <div class="row">
+      <a class="ghost" href="#pray">Pray with me</a>
+      <a class="ghost" id="a-plan" href="#plans">Start a 7-day plan</a>
+      <a class="ghost" id="a-stories" href="#stories">Stories like mine</a>
+    </div>
+  </div>
+</div></div>
+
+<!-- ═════════ PRAY ═════════ -->
+<div class="view" id="v-pray"><div class="wrap">
+  <p class="eyebrow">Prayer</p>
+  <h3 class="title">Let me pray with you</h3>
+  <p class="lede">Tell us what's going on — as much or as little as you want. A real person will read it and pray for you by name.</p>
+  <form class="card" id="prayer-form">
+    <label class="f" for="name">First name (optional)</label>
+    <input id="name" type="text" autocomplete="given-name" placeholder="You can stay anonymous">
+    <label class="f" for="req">How can we pray for you?</label>
+    <textarea id="req" required placeholder="Whatever you're facing…"></textarea>
+    <div class="check">
+      <input id="reply" type="checkbox">
+      <label for="reply">I'd like someone to write back to me</label>
+    </div>
+    <button class="cta" type="submit"><b>Send my prayer request</b></button>
+    <p class="note" style="text-align:center">Your request stays private. Opens your email app to send.</p>
+  </form>
+  <div class="stack" style="margin-top:12px">
+    <a class="card link" href="#wall"><div><b>Prayer wall</b><span>Share a request and pray for others</span></div><i>→</i></a>
+    <a class="card link" href="#wall/answered"><div><b>Answered prayers</b><span>See what God has done</span></div><i>→</i></a>
+  </div>
+</div></div>
+
+<!-- ═════════ PRAYER WALL + ANSWERED ═════════ -->
+<div class="view" id="v-wall"><div class="wrap">
+  <a class="back" href="#pray">← Prayer</a>
+  <p class="eyebrow">Together</p>
+  <h3 class="title">Prayer wall</h3>
+  <div class="seg" id="wall-seg">
+    <button type="button" data-k="requests">Requests</button>
+    <button type="button" data-k="answered">Answered</button>
+  </div>
+  <p class="preview" id="wall-preview">Preview mode: posts are saved on this device only. Nobody else can see them until the wall is connected to a database.</p>
+  <form class="card" id="wall-form">
+    <label class="f" for="w-text" id="w-label"></label>
+    <textarea id="w-text" required maxlength="600"></textarea>
+    <label class="f" for="w-name">First name (optional)</label>
+    <input id="w-name" type="text" maxlength="30" placeholder="Anonymous">
+    <button class="cta plain" type="submit" style="margin-top:16px" id="w-btn"></button>
+    <p class="note" style="text-align:center">Please don't post full names, addresses or phone numbers.</p>
+  </form>
+  <div class="stack" id="wall-list" style="margin-top:16px"></div>
+</div></div>
+
+<!-- ═════════ STORIES ═════════ -->
+<div class="view" id="v-stories"><div class="wrap">
+  <p class="eyebrow">Real stories</p>
+  <h3 class="title">Broken. Then restored.</h3>
+  <p class="lede">Real people talking honestly about the darkest place they've been — and how Christ met them there. Pick what you're facing to find someone who's been there.</p>
+  <div class="chips" id="story-chips"></div>
+  <div class="stack two" id="story-list" style="margin-top:16px"></div>
+</div></div>
+
+<!-- ═════════ MORE ═════════ -->
+<div class="view" id="v-more"><div class="wrap">
+  <p class="eyebrow">More</p>
+  <h3 class="title">Everything here</h3>
+  <div class="stack">
+    <a class="card link" href="#plans"><div><b>7-day plans</b><span>A verse, a thought and a prayer each day</span></div><i>→</i></a>
+    <a class="card link" href="#steps"><div><b>Next steps</b><span>You prayed. Here's what to do now</span></div><i>→</i></a>
+    <a class="card link" href="#help"><div><b>Find help near me</b><span>Churches, recovery groups, counselors</span></div><i>→</i></a>
+    <a class="card link" href="#helper"><div><b>For the one helping</b><span>How to pray with a hurting friend</span></div><i>→</i></a>
+    <a class="card link" href="#wall"><div><b>Prayer wall</b><span>Ask for prayer and pray for others</span></div><i>→</i></a>
+    <a class="card link" href="#wall/answered"><div><b>Answered prayers</b><span>What God has done</span></div><i>→</i></a>
+    <a class="card link" href="#support"><div><b>Support us</b><span>Get the shirt or give</span></div><i>→</i></a>
+    <a class="card link" href="#qr"><div><b>Share this site</b><span>A code people can scan to ask for prayer</span></div><i>→</i></a>
+  </div>
+</div></div>
+
+<!-- ═════════ PLANS ═════════ -->
+<div class="view" id="v-plans"><div class="wrap">
+  <a class="back" href="#more" id="plan-back">← More</a>
+  <div id="plan-list">
+    <p class="eyebrow">7-day plans</p>
+    <h3 class="title">One day at a time</h3>
+    <p class="lede">Seven short days. One verse, one thought, one prayer. Your place is saved on this phone.</p>
+    <div class="stack" id="plan-cards"></div>
+  </div>
+  <div id="plan-day" hidden>
+    <p class="eyebrow" id="pd-plan"></p>
+    <h3 class="title" id="pd-title"></h3>
+    <div class="dots" id="pd-dots"></div>
+    <div class="card">
+      <blockquote id="pd-verse"></blockquote>
+      <cite id="pd-ref"></cite>
+      <p class="truth" id="pd-thought"></p>
+      <div class="urgent" id="pd-urgent" hidden>
+        <p>If the heaviness ever turns into thoughts of ending your life, please reach out right now.</p>
+        <a class="cta plain" href="tel:988">Call or text 988</a>
+      </div>
+      <p class="prayer"><b>Pray this</b><span id="pd-prayer"></span></p>
+    </div>
+    <button class="cta plain" type="button" id="pd-next" style="margin-top:16px"></button>
+  </div>
+</div></div>
+
+<!-- ═════════ NEXT STEPS ═════════ -->
+<div class="view" id="v-steps"><div class="wrap">
+  <a class="back" href="#more">← More</a>
+  <p class="eyebrow">Next steps</p>
+  <h3 class="title">I prayed. Now what?</h3>
+  <p class="lede">If you just reached out to God — maybe for the first time, maybe for the first time in years — here's how to keep walking.</p>
+  <div class="steps">
+    <div class="card"><h4>Know that He heard you</h4><p>You don't need special words. Scripture says whoever calls on the name of the Lord shall be saved (Romans 10:13). That includes you.</p></div>
+    <div class="card"><h4>Keep talking to Him</h4><p>Prayer is just honest conversation. Tell God the truth about your day, out loud or in your head. Two minutes in the morning is a real start.</p></div>
+    <div class="card"><h4>Open the Bible</h4><p>Start with the Gospel of John. Read one chapter a day and ask one question: what does this show me about Jesus?</p></div>
+    <div class="card"><h4>Tell one person</h4><p>Healing happens in the light. Tell someone you trust what you're carrying and what you prayed.</p></div>
+    <div class="card"><h4>Find a church</h4><p>You weren't meant to do this by yourself. Look for a church that teaches the Bible and makes room for people who are hurting. Ask the pastor about baptism.</p></div>
+    <div class="card"><h4>Get the help you need</h4><p>Faith and practical help work together. A counselor, a doctor or a recovery group can be part of how God restores you.</p></div>
+  </div>
+  <div class="row"><a class="ghost" href="#help">Find a church or group near me</a><a class="ghost" href="#pray">Ask us to pray</a></div>
+</div></div>
+
+<!-- ═════════ LOCAL HELP ═════════ -->
+<div class="view" id="v-help"><div class="wrap">
+  <a class="back" href="#more">← More</a>
+  <p class="eyebrow">Find help</p>
+  <h3 class="title">Help near you</h3>
+  <p class="lede">Enter your zip code and tap what you're looking for. Results open in Google Maps.</p>
+  <div class="card">
+    <label class="f" for="zip">Zip code</label>
+    <input id="zip" type="tel" inputmode="numeric" maxlength="5" placeholder="e.g. 30301" autocomplete="postal-code">
+    <div class="stack" id="help-btns" style="margin-top:16px"></div>
+    <p class="note" id="zip-msg"></p>
+  </div>
+  <div class="block" style="padding-top:28px">
+    <p class="eyebrow">Right now, anywhere in the US</p>
+    <div class="stack">
+      <a class="card link" href="tel:988"><div><b>988 Suicide &amp; Crisis Lifeline</b><span>Call or text 988 — free, 24/7</span></div><i>→</i></a>
+      <a class="card link" href="tel:18006624357"><div><b>SAMHSA National Helpline</b><span>1-800-662-4357 — addiction and mental health referrals, 24/7</span></div><i>→</i></a>
+      <a class="card link" href="tel:911"><div><b>Emergency</b><span>Call 911 if you or someone else is in danger</span></div><i>→</i></a>
+    </div>
+  </div>
+</div></div>
+
+<!-- ═════════ FOR THE ONE HELPING ═════════ -->
+<div class="view" id="v-helper"><div class="wrap">
+  <a class="back" href="#more">← More</a>
+  <p class="eyebrow">For the one helping</p>
+  <h3 class="title">How to pray with a hurting friend</h3>
+  <p class="lede">You don't need to be a pastor. You need to show up, listen and bring them to Jesus.</p>
+  <div class="stack do">
+    <div class="card"><h4>Before you pray</h4><ul>
+      <li>Listen first. Let them finish. Silence is fine.</li>
+      <li>Ask, <span class="say">"Can I pray with you right now?"</span> and respect a no.</li>
+      <li>Ask what they'd like prayer for instead of guessing.</li>
+    </ul></div>
+    <div class="card"><h4>When you pray</h4><ul>
+      <li>Keep it short and plain. Thirty seconds is enough.</li>
+      <li>Use their name. Say back to God what they told you.</li>
+      <li>Pray one promise over them, like Psalm 34:18.</li>
+    </ul></div>
+    <div class="card"><h4>Say this</h4><ul>
+      <li class="say">"I'm so glad you told me."</li>
+      <li class="say">"I'm not going anywhere."</li>
+      <li class="say">"That sounds so heavy. Thank you for trusting me with it."</li>
+    </ul></div>
+    <div class="card"><h4>Skip this</h4><ul>
+      <li>"Just have more faith" or "just pray about it."</li>
+      <li>"Everything happens for a reason."</li>
+      <li>"Others have it worse."</li>
+      <li>Fixing, lecturing, or making it about your own story.</li>
+    </ul></div>
+    <div class="card"><h4>Afterward</h4><ul>
+      <li>Check in tomorrow. A text that says "praying for you today" matters.</li>
+      <li>Keep what they said private.</li>
+      <li>Help them find the next step: a church, a group, a counselor.</li>
+    </ul></div>
+    <div class="urgent" style="margin-top:0">
+      <p><strong>If they mention suicide, take it seriously.</strong> Ask directly: "Are you thinking about killing yourself?" Asking does not plant the idea. Stay with them, and call or text 988 together. If they are in immediate danger, call 911.</p>
+      <a class="cta plain" href="tel:988">Call or text 988</a>
+    </div>
+  </div>
+</div></div>
+
+<!-- ═════════ SUPPORT ═════════ -->
+<div class="view" id="v-support"><div class="wrap">
+  <p class="eyebrow">Support us</p>
+  <h3 class="title">Wear the message</h3>
+  <div class="card shirt">
+    <svg viewBox="0 0 200 180" aria-hidden="true">
+      <path d="M62 14l-46 22 16 38 22-10v102h92V64l22 10 16-38-46-22c-6 14-18 20-38 20S68 28 62 14z" fill="#0d0d0e" stroke="#3a3a40" stroke-width="2"/>
+      <rect x="96" y="56" width="8" height="46" fill="#8a7257"/><rect x="82" y="68" width="36" height="8" fill="#8a7257"/>
+      <path d="M74 118h52M70 132h60M78 146h44" stroke="#d81f26" stroke-width="5" stroke-linecap="round"/>
+    </svg>
+    <p class="s" style="margin-bottom:16px">Every shirt starts a conversation. "Let me pray with you" is on the sleeve — so someone who needs it can ask.</p>
+    <!-- Set these two links to your store and giving pages. -->
+    <a class="cta" href="#support"><b>Get the shirt</b></a>
+    <div class="row" style="justify-content:center"><a class="ghost" href="#support">Give to the ministry</a></div>
+  </div>
+</div></div>
+
+<!-- ═════════ QR ═════════ -->
+<div class="view" id="v-qr"><div class="wrap">
+  <a class="back" href="#more">← More</a>
+  <p class="eyebrow">Share</p>
+  <h3 class="title">Scan to ask for prayer</h3>
+  <p class="lede">This code opens the prayer request screen. Print it on the shirt sleeve, a card or a sticker so someone can ask without saying a word.</p>
+  <div class="card" style="text-align:center">
+    <div id="qr"></div>
+    <p class="note" id="qr-url" style="overflow-wrap:anywhere"></p>
+    <div class="row" style="justify-content:center"><button class="ghost" type="button" id="qr-dl">Download for printing</button></div>
+  </div>
+</div></div>
+
+<footer>
+  <span class="brush">Restored Hope Ministry</span>
+  Scripture quotations from the King James Version.<br>
+  This site offers prayer and encouragement, not medical or mental-health care.<br>
+  In a crisis, call or text <a href="tel:988">988</a> (US) or call 911.
+</footer>
+
+<nav class="tabs" aria-label="Main">
+  <a href="#home" data-tab="home"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg>Home</a>
+  <a href="#hope" data-tab="hope"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg>Find hope</a>
+  <a class="pray" href="#pray" data-tab="pray"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3v18M6 9h12"/></svg>Pray</a>
+  <a href="#stories" data-tab="stories"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg>Stories</a>
+  <a href="#more" data-tab="more"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>More</a>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+/* ───────────── SETTINGS ───────────── */
+const PRAYER_EMAIL = "prayer.restoredhope@yahoo.com"; // inbox that receives private prayer requests
+const SIGNUP_URL   = "";                   // email-list form endpoint (Mailchimp, Formspree…). Empty = sign-ups not open yet.
+const SITE_URL     = "";                   // your live address, e.g. "https://restoredhope.org/". Empty = use wherever the page is open.
+
+/* ───────────── CONTENT ─────────────
+   Scripture is KJV (public domain). Edit truths and prayers freely. */
+const CARRY = [
+  { k: "Fear", plan: "peace", ref: "Isaiah 41:10",
+    v: "Fear thou not; for I am with thee: be not dismayed; for I am thy God: I will strengthen thee; yea, I will help thee; yea, I will uphold thee with the right hand of my righteousness.",
+    t: "Fear tells you that you're facing this by yourself. God says He is holding you up.",
+    p: "Lord, I'm afraid. Be near to me right now. Strengthen me, help me, and hold me up. Amen." },
+  { k: "Anxiety", plan: "peace", ref: "1 Peter 5:7",
+    v: "Casting all your care upon him; for he careth for you.",
+    t: "You weren't built to carry all of it. Hand Him the things that keep you up at night — one at a time.",
+    p: "Father, I give You every worry I keep turning over. I can't carry them. Thank You that You care for me. Amen." },
+  { k: "Depression", plan: "hope", ref: "Psalm 42:11",
+    v: "Why art thou cast down, O my soul? and why art thou disquieted within me? hope thou in God: for I shall yet praise him, who is the health of my countenance, and my God.",
+    t: "The psalmist felt it too. \"I shall yet praise him\" — this heaviness is not the end of your story.",
+    p: "God, I feel so low and I don't have the words. Lift my head. Give me enough hope for today. Amen." },
+  { k: "Suicide", plan: "hope", urgent: true, ref: "Psalm 34:18",
+    v: "The LORD is nigh unto them that are of a broken heart; and saveth such as be of a contrite spirit.",
+    t: "Your life has a worth you can't see right now. God is close to you in this exact moment, and there are people who want to help you stay.",
+    p: "Jesus, I don't want to hurt like this anymore. Stay with me. Send me help, and give me the strength to reach for it. Amen." },
+  { k: "Hopelessness", plan: "hope", ref: "Jeremiah 29:11",
+    v: "For I know the thoughts that I think toward you, saith the LORD, thoughts of peace, and not of evil, to give you an expected end.",
+    t: "You can't see a way forward. God can — and His thoughts toward you are peace.",
+    p: "Lord, I can't see a future. Show me the next step, and help me trust You with the rest. Amen." },
+  { k: "Shame", plan: "shame", ref: "Romans 8:1",
+    v: "There is therefore now no condemnation to them which are in Christ Jesus, who walk not after the flesh, but after the Spirit.",
+    t: "Shame says you are what you did. In Christ, the verdict over you is already settled: no condemnation.",
+    p: "Jesus, I've been hiding. Thank You that You took my shame on the cross. Help me live like I'm free. Amen." },
+  { k: "Guilt", plan: "shame", ref: "1 John 1:9",
+    v: "If we confess our sins, he is faithful and just to forgive us our sins, and to cleanse us from all unrighteousness.",
+    t: "Forgiveness isn't something you earn back. Confess it, and He is faithful to cleanse it — all of it.",
+    p: "Father, I confess what I've done. Forgive me and make me clean. Help me receive Your mercy. Amen." },
+  { k: "Regret", plan: "shame", ref: "Isaiah 43:18–19",
+    v: "Remember ye not the former things, neither consider the things of old. Behold, I will do a new thing; now it shall spring forth; shall ye not know it?",
+    t: "You can't rewrite the past. God specializes in doing a new thing with what's left.",
+    p: "Lord, I keep replaying what I can't change. Do a new thing in me. Redeem what I thought was wasted. Amen." },
+  { k: "Loneliness", plan: "hope", ref: "Deuteronomy 31:6",
+    v: "Be strong and of a good courage, fear not, nor be afraid of them: for the LORD thy God, he it is that doth go with thee; he will not fail thee, nor forsake thee.",
+    t: "Even when the room is empty, you are not unaccompanied. He goes with you and will not leave.",
+    p: "God, I feel unseen. Let me know You're here, and bring people into my life who will walk with me. Amen." },
+  { k: "Addiction", plan: "hope", ref: "1 Corinthians 10:13",
+    v: "There hath no temptation taken you but such as is common to man: but God is faithful, who will not suffer you to be tempted above that ye are able; but will with the temptation also make a way to escape, that ye may be able to bear it.",
+    t: "You're not the only one, and you're not too far gone. There is a way out — look for it, and tell someone today.",
+    p: "Lord, I can't break this by myself. Show me the way of escape and give me the courage to take it. Amen." },
+  { k: "Grief", plan: "hope", ref: "Matthew 5:4",
+    v: "Blessed are they that mourn: for they shall be comforted.",
+    t: "Your tears aren't a lack of faith. Jesus calls the mourning blessed, and promises comfort.",
+    p: "Jesus, this loss is so heavy. Sit with me in it. Comfort me the way only You can. Amen." },
+  { k: "Pain", plan: "hope", ref: "Psalm 147:3",
+    v: "He healeth the broken in heart, and bindeth up their wounds.",
+    t: "He doesn't look away from your wounds. He binds them — personally.",
+    p: "Father, You see where it hurts. Bind up what's broken in me and bring healing. Amen." },
+  { k: "Anger", plan: "peace", ref: "Ephesians 4:26",
+    v: "Be ye angry, and sin not: let not the sun go down upon your wrath.",
+    t: "Anger itself isn't the sin. Bring it to God before it settles in and starts steering.",
+    p: "Lord, I'm angry and I don't want it to own me. Take it. Give me Your peace before this day ends. Amen." },
+  { k: "Pride", plan: "shame", ref: "James 4:6",
+    v: "But he giveth more grace. Wherefore he saith, God resisteth the proud, but giveth grace unto the humble.",
+    t: "Asking for help isn't weakness. It's the doorway to \"more grace.\"",
+    p: "God, I've tried to do this my own way. I need You. Humble me, and give me Your grace. Amen." },
+  { k: "Lust", plan: "shame", ref: "Psalm 51:10",
+    v: "Create in me a clean heart, O God; and renew a right spirit within me.",
+    t: "David prayed this after his worst failure. A clean heart is something God creates, not something you manufacture.",
+    p: "Create in me a clean heart, O God. Renew my mind and guard my eyes. Amen." }
+];
+
+const PLANS = [
+  { id: "hope", name: "7 days when hope feels gone", for: "Depression, hopelessness, grief, loneliness", urgent: true, days: [
+    { h: "He is close", ref: "Psalm 34:18", v: "The LORD is nigh unto them that are of a broken heart; and saveth such as be of a contrite spirit.",
+      t: "Start here: God is not far off waiting for you to feel better. He is near to the broken. Today you don't have to do anything except let that be true.", p: "Lord, I'm broken. Thank You for coming close anyway. Amen." },
+    { h: "New this morning", ref: "Lamentations 3:22–23", v: "It is of the LORD's mercies that we are not consumed, because his compassions fail not. They are new every morning: great is thy faithfulness.",
+      t: "These words were written in the middle of a ruined city. Mercy didn't run out yesterday. There is a fresh supply for today, and that's all you need.", p: "Father, give me today's mercy for today's weight. Amen." },
+    { h: "Night doesn't last", ref: "Psalm 30:5", v: "Weeping may endure for a night, but joy cometh in the morning.",
+      t: "The Bible doesn't pretend the night isn't real. It says the night has an end. What you feel right now is true, and it is not permanent.", p: "God, hold me through this night and bring the morning. Amen." },
+    { h: "Come as you are", ref: "Matthew 11:28", v: "Come unto me, all ye that labour and are heavy laden, and I will give you rest.",
+      t: "Jesus doesn't say \"fix yourself and then come.\" He invites the exhausted. Tell Him one heavy thing today and leave it with Him.", p: "Jesus, I'm tired. I'm coming to You. Give me rest. Amen." },
+    { h: "Strength while you wait", ref: "Isaiah 40:31", v: "But they that wait upon the LORD shall renew their strength; they shall mount up with wings as eagles; they shall run, and not be weary; and they shall walk, and not faint.",
+      t: "Some days the victory is walking and not fainting. That counts. Do one small thing today: a shower, a walk, a call to a friend.", p: "Lord, renew my strength for the next step, even a small one. Amen." },
+    { h: "Filled with hope", ref: "Romans 15:13", v: "Now the God of hope fill you with all joy and peace in believing, that ye may abound in hope, through the power of the Holy Ghost.",
+      t: "Hope isn't something you work up. He is the God of hope, and He fills. Ask Him to, and tell one person you trust how you've really been.", p: "God of hope, fill me. I can't make it on my own. Amen." },
+    { h: "A future", ref: "Jeremiah 29:11", v: "For I know the thoughts that I think toward you, saith the LORD, thoughts of peace, and not of evil, to give you an expected end.",
+      t: "Seven days in, you're still here, and that matters. God's thoughts toward you are peace. Keep going: find a church, keep praying, stay connected.", p: "Lord, thank You for carrying me this week. I trust You with what's next. Amen." } ] },
+  { id: "peace", name: "7 days toward peace", for: "Anxiety, fear, anger", days: [
+    { h: "Hand it over", ref: "1 Peter 5:7", v: "Casting all your care upon him; for he careth for you.",
+      t: "Write down everything you're worried about. Then, one line at a time, say \"This is Yours.\" Casting is something you do on purpose.", p: "Father, I'm handing You this list. Thank You for caring about every line. Amen." },
+    { h: "Pray instead", ref: "Philippians 4:6–7", v: "Be careful for nothing; but in every thing by prayer and supplication with thanksgiving let your requests be made known unto God. And the peace of God, which passeth all understanding, shall keep your hearts and minds through Christ Jesus.",
+      t: "Every time a worry comes up today, turn it into a one-sentence prayer and add one thing you're thankful for. Peace is promised as a guard over your mind.", p: "Lord, I bring You what I'd normally just worry about. Guard my heart and mind. Amen." },
+    { h: "Only today", ref: "Matthew 6:34", v: "Take therefore no thought for the morrow: for the morrow shall take thought for the things of itself. Sufficient unto the day is the evil thereof.",
+      t: "Anxiety lives in tomorrow. Jesus gives you permission to live in today. What is the one thing in front of you right now?", p: "Jesus, keep me in today. I leave tomorrow with You. Amen." },
+    { h: "Be still", ref: "Psalm 46:10", v: "Be still, and know that I am God.",
+      t: "Set a timer for two minutes. No phone, no noise. Breathe slowly and repeat this verse. You are not the one holding the world together.", p: "God, You are God and I am not. Quiet my soul. Amen." },
+    { h: "A mind that stays", ref: "Isaiah 26:3", v: "Thou wilt keep him in perfect peace, whose mind is stayed on thee: because he trusteth in thee.",
+      t: "Peace follows attention. When your thoughts start to spiral, bring them back to one true thing about God. That's what capturing a thought looks like.", p: "Lord, fix my mind on You when it runs. Amen." },
+    { h: "Not from Him", ref: "2 Timothy 1:7", v: "For God hath not given us the spirit of fear; but of power, and of love, and of a sound mind.",
+      t: "That dread is not God's voice. What He gives is power, love and a sound mind. Say this verse out loud the next time fear speaks.", p: "Father, I refuse what You didn't give me. Fill me with power, love and a sound mind. Amen." },
+    { h: "His peace", ref: "John 14:27", v: "Peace I leave with you, my peace I give unto you: not as the world giveth, give I unto you. Let not your heart be troubled, neither let it be afraid.",
+      t: "The world's peace depends on everything going right. His doesn't. Keep the habits from this week: hand it over, pray instead, stay in today.", p: "Jesus, I receive Your peace. Let it stay. Amen." } ] },
+  { id: "shame", name: "7 days out of shame", for: "Shame, guilt, regret, lust, pride", days: [
+    { h: "No condemnation", ref: "Romans 8:1", v: "There is therefore now no condemnation to them which are in Christ Jesus, who walk not after the flesh, but after the Spirit.",
+      t: "Guilt says \"I did something bad.\" Shame says \"I am bad.\" In Christ, God's verdict over you is already in, and it isn't condemnation.", p: "Jesus, thank You that the verdict is settled. Help me believe it. Amen." },
+    { h: "Look up", ref: "Psalm 34:5", v: "They looked unto him, and were lightened: and their faces were not ashamed.",
+      t: "Shame makes you look down and hide. Today, lift your face. Tell God the thing you least want to say. He already knows, and He hasn't left.", p: "Lord, I'm looking to You. Take the shame off my face. Amen." },
+    { h: "How far it's gone", ref: "Psalm 103:12", v: "As far as the east is from the west, so far hath he removed our transgressions from us.",
+      t: "East and west never meet. When God forgives, He removes. You're allowed to stop carrying what He has taken away.", p: "Father, help me stop picking back up what You removed. Amen." },
+    { h: "New", ref: "2 Corinthians 5:17", v: "Therefore if any man be in Christ, he is a new creature: old things are passed away; behold, all things are become new.",
+      t: "Your past is a real part of your story. It is not your name. In Christ you are a new creation, and that's who God sees.", p: "God, teach me to see myself the way You do: new. Amen." },
+    { h: "Come boldly", ref: "Hebrews 4:16", v: "Let us therefore come boldly unto the throne of grace, that we may obtain mercy, and find grace to help in time of need.",
+      t: "When you fail again, shame says stay away until you've cleaned up. God says come now, boldly. The throne you're approaching is made of grace.", p: "Lord, I'm coming as I am. I need mercy and help today. Amen." },
+    { h: "White as snow", ref: "Isaiah 1:18", v: "Come now, and let us reason together, saith the LORD: though your sins be as scarlet, they shall be as white as snow; though they be red like crimson, they shall be as wool.",
+      t: "No stain is too deep. Today, tell one safe person the thing you've kept hidden. Shame loses its grip when it's spoken in the light.", p: "Father, wash me clean, and give me courage to come into the light. Amen." },
+    { h: "Free indeed", ref: "John 8:36", v: "If the Son therefore shall make you free, ye shall be free indeed.",
+      t: "Freedom is a gift Jesus gives. Walk in it one day at a time, and stay close to people who remind you who you are.", p: "Jesus, You've made me free. Help me live like it. Amen." } ] }
+];
+
+// Replace these with real testimonies: add { tag, title, blurb, url } for each video.
+const STORIES = ["Addiction", "Depression", "Suicide", "Grief", "Shame", "Anxiety"].map(tag => (
+  { tag, title: "Story title goes here", blurb: "Add a one-line summary and link a testimony video.", url: "" }));
+
+const HELP = [
+  ["Bible-teaching churches", "churches"],
+  ["Celebrate Recovery groups", "Celebrate Recovery"],
+  ["Christian counselors", "Christian counseling"],
+  ["Grief support groups", "GriefShare grief support group"],
+  ["Addiction treatment", "addiction treatment center"]
+];
+
+/* ───────────── HELPERS ───────────── */
+const $ = id => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const slug = s => s.toLowerCase();
+const store = {
+  get(k, d) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+
+/* ───────────── CROSS ARTWORK ───────────── */
+(function drawCross() {
+  const NS = "http://www.w3.org/2000/svg";
+  const add = (parent, tag, attrs) => { const n = document.createElementNS(NS, tag); for (const a in attrs) n.setAttribute(a, attrs[a]); $(parent).appendChild(n); };
+  if (!$("rays")) return; // hero now uses images/cross.jpg
+  const cx = 120, cy = 105;
+  // Burst of light: thin spikes of uneven length
+  for (let i = 0; i < 44; i++) {
+    const a = (i / 44) * Math.PI * 2 + (i % 3) * 0.03;
+    const len = 62 + ((i * 37) % 60) + (i % 4 === 0 ? 26 : 0);
+    const w = 0.035;
+    const p = (ang, r) => `${(cx + Math.cos(ang) * r).toFixed(1)},${(cy + Math.sin(ang) * r).toFixed(1)}`;
+    add("rays", "polygon", { points: `${p(a - w, 12)} ${p(a, len)} ${p(a + w, 12)}`, opacity: (0.35 + (i % 5) * 0.11).toFixed(2) });
+  }
+  // Thorn spikes around the wrap
+  for (let i = 0; i < 18; i++) {
+    const a = (i / 18) * Math.PI * 2 + 0.2;
+    const x = cx + Math.cos(a) * 30, y = cy + Math.sin(a) * 12;
+    const out = 7 + (i % 3) * 3, tw = (i % 2 ? 0.5 : -0.5);
+    add("thorns", "path", { d: `M${x.toFixed(1)} ${y.toFixed(1)}l${(Math.cos(a + tw) * out).toFixed(1)} ${(Math.sin(a + tw) * out).toFixed(1)}`, stroke: "#120c07", "stroke-width": 1.8 });
+  }
+  // Red thorn coils spiralling out from the foot of the cross
+  for (let i = 0; i < 6; i++) {
+    const y = 196 + i * 18, rx = 20 + i * 17, ry = 6 + i * 2.2, sw = 4 + i * 1.1;
+    add("coil-back", "path", { d: `M${cx - rx} ${y}a${rx} ${ry} 0 0 1 ${rx * 2} 0`, "stroke-width": sw });
+    add("coil-front", "path", { d: `M${cx - rx} ${y}a${rx} ${ry} 0 0 0 ${rx * 2} 0`, "stroke-width": sw });
+    for (let j = 0; j < 4 + i; j++) {
+      const a = Math.PI * (0.12 + 0.76 * (j / (3 + i)));
+      const x = cx + Math.cos(a) * rx, yy = y + Math.sin(a) * ry;
+      const dx = Math.cos(a) * 6 + (j % 2 ? 3 : -3), dy = 5 + (j % 3);
+      add("coil-front", "path", { d: `M${x.toFixed(1)} ${yy.toFixed(1)}l${dx.toFixed(1)} ${dy}`, "stroke-width": 1.6 });
+    }
+  }
+})();
+
+/* ───────────── ROUTER ───────────── */
+const TAB_OF = { wall: "pray", plans: "more", steps: "more", help: "more", helper: "more", support: "more", qr: "more" };
+const onShow = {};
+function route() {
+  let [view, arg] = location.hash.slice(1).split("/");
+  if (!$("v-" + view)) view = "home";
+  document.querySelectorAll(".view").forEach(v => v.classList.toggle("on", v.id === "v-" + view));
+  const tab = TAB_OF[view] || view;
+  document.querySelectorAll("nav.tabs a").forEach(a => a.dataset.tab === tab ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+  window.scrollTo(0, 0);
+  if (onShow[view]) onShow[view](arg && decodeURIComponent(arg));
+}
+window.addEventListener("hashchange", route);
+
+/* ───────────── TODAY'S WORD + SIGN-UP ───────────── */
+const today = CARRY[Math.floor(Date.now() / 864e5) % CARRY.length];
+$("votd-text").textContent = today.v;
+$("votd-ref").textContent = today.ref;
+$("share").addEventListener("click", async () => {
+  const text = `"${today.v}" — ${today.ref}`;
+  try {
+    if (navigator.share) await navigator.share({ text, url: location.href });
+    else { await navigator.clipboard.writeText(text); $("share").textContent = "Copied"; }
+  } catch (e) { /* share cancelled */ }
+});
+$("signup").addEventListener("submit", async e => {
+  e.preventDefault();
+  const msg = $("su-msg");
+  if (!SIGNUP_URL) { msg.textContent = "Daily verse sign-ups aren't open yet. Please check back soon."; return; }
+  try {
+    const r = await fetch(SIGNUP_URL, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ email: $("su-email").value }) });
+    if (!r.ok) throw 0;
+    msg.textContent = "You're signed up. Look for your first verse tomorrow morning."; e.target.reset();
+  } catch (err) { msg.textContent = "That didn't go through. Please try again in a moment."; }
+});
+
+/* ───────────── FIND HOPE ───────────── */
+const chips = $("chips");
+function pick(c) {
+  chips.querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", String(x.textContent === c.k)));
+  $("a-verse").textContent = c.v; $("a-ref").textContent = c.ref;
+  $("a-truth").textContent = c.t; $("a-prayer").textContent = c.p;
+  $("a-urgent").hidden = !c.urgent;
+  $("a-plan").href = "#plans/" + c.plan;
+  $("a-stories").href = "#stories/" + slug(c.k);
+  $("answer").hidden = false;
+}
+CARRY.forEach(c => {
+  const b = el("button", "chip", c.k); b.type = "button"; b.setAttribute("aria-pressed", "false");
+  b.addEventListener("click", () => { pick(c); $("answer").scrollIntoView({ block: "nearest", behavior: "smooth" }); });
+  chips.appendChild(b);
+});
+onShow.hope = arg => { const c = arg && CARRY.find(x => slug(x.k) === arg); if (c) pick(c); };
+
+/* ───────────── PRIVATE PRAYER REQUEST ───────────── */
+$("prayer-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const name = $("name").value.trim() || "Anonymous";
+  const body = `From: ${name}\nWants a reply: ${$("reply").checked ? "Yes" : "No"}\n\n${$("req").value.trim()}`;
+  location.href = `mailto:${PRAYER_EMAIL}?subject=${encodeURIComponent("Prayer request")}&body=${encodeURIComponent(body)}`;
+});
+
+/* ───────────── PRAYER WALL + ANSWERED PRAYERS ─────────────
+   Preview mode: saved in this browser only. To make the wall shared, replace
+   loadPosts / savePosts with calls to a database and remove #wall-preview. */
+const WALL = {
+  requests: { key: "rh_requests", label: "What can others pray for?", btn: "Post to the wall", act: "I prayed for this", count: n => n === 1 ? "1 person prayed" : n + " people prayed", empty: "No requests yet. Be the first to ask." },
+  answered: { key: "rh_answered", label: "What did God do?", btn: "Share my answered prayer", act: "Praise God", count: n => n === 1 ? "1 person rejoiced" : n + " people rejoiced", empty: "No answered prayers shared yet. If God has come through for you, tell it here." }
+};
+let wallKind = "requests";
+const loadPosts = kind => store.get(WALL[kind].key, []);
+const savePosts = (kind, posts) => store.set(WALL[kind].key, posts);
+function renderWall() {
+  const cfg = WALL[wallKind], posts = loadPosts(wallKind), list = $("wall-list");
+  document.querySelectorAll("#wall-seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.k === wallKind)));
+  $("w-label").textContent = cfg.label; $("w-btn").textContent = cfg.btn;
+  list.replaceChildren();
+  if (!posts.length) { list.appendChild(el("div", "card empty", cfg.empty)); return; }
+  posts.forEach(p => {
+    const card = el("article", "card post");
+    card.appendChild(el("p", "", p.text));
+    const meta = el("div", "meta");
+    meta.appendChild(el("span", "", `${p.name || "Anonymous"} · ${new Date(p.at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}${p.n ? " · " + cfg.count(p.n) : ""}`));
+    const b = el("button", "prayed", p.mine ? "✓ " + cfg.act : cfg.act); b.type = "button"; b.setAttribute("aria-pressed", String(!!p.mine));
+    b.addEventListener("click", () => { p.mine = !p.mine; p.n = Math.max(0, (p.n || 0) + (p.mine ? 1 : -1)); savePosts(wallKind, posts); renderWall(); });
+    meta.appendChild(b); card.appendChild(meta); list.appendChild(card);
+  });
+}
+document.querySelectorAll("#wall-seg button").forEach(b => b.addEventListener("click", () => { wallKind = b.dataset.k; renderWall(); }));
+$("wall-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const text = $("w-text").value.trim(); if (!text) return;
+  const posts = loadPosts(wallKind);
+  posts.unshift({ text, name: $("w-name").value.trim(), at: Date.now(), n: 0 });
+  savePosts(wallKind, posts); e.target.reset(); renderWall();
+});
+onShow.wall = arg => { wallKind = arg === "answered" ? "answered" : "requests"; renderWall(); };
+
+/* ───────────── STORIES ───────────── */
+const storyTags = ["All", ...new Set(STORIES.map(s => s.tag))];
+function renderStories(tag) {
+  const match = storyTags.find(t => slug(t) === slug(tag || "all"));
+  const active = match || "All";
+  const sc = $("story-chips"); sc.replaceChildren();
+  storyTags.forEach(t => {
+    const b = el("button", "chip", t); b.type = "button"; b.setAttribute("aria-pressed", String(t === active));
+    b.addEventListener("click", () => renderStories(t)); sc.appendChild(b);
+  });
+  const list = $("story-list"); list.replaceChildren();
+  if (tag && !match) list.appendChild(el("div", "card empty", "No stories on that yet. Here is everything we have so far."));
+  STORIES.filter(s => active === "All" || s.tag === active).forEach(s => {
+    const card = el(s.url ? "a" : "article", "card story"); if (s.url) { card.href = s.url; card.style.textDecoration = "none"; }
+    const th = el("div", "thumb"); th.innerHTML = '<svg width="34" height="34" viewBox="0 0 24 24" fill="#f3f1ee"><path d="M8 5v14l11-7z"/></svg>';
+    const body = el("div"); body.append(el("span", "tag", s.tag), el("h4", "", s.title), el("p", "", s.blurb));
+    card.append(th, body); list.appendChild(card);
+  });
+}
+onShow.stories = renderStories;
+
+/* ───────────── 7-DAY PLANS ───────────── */
+const progress = id => store.get("rh_plan_" + id, 0); // number of days completed
+function renderPlans(id, dayArg) {
+  const plan = PLANS.find(p => p.id === id);
+  $("plan-list").hidden = !!plan; $("plan-day").hidden = !plan;
+  $("plan-back").href = plan ? "#plans" : "#more"; $("plan-back").textContent = plan ? "← All plans" : "← More";
+  if (!plan) {
+    const box = $("plan-cards"); box.replaceChildren();
+    PLANS.forEach(p => {
+      const done = progress(p.id);
+      const a = el("a", "card"); a.href = "#plans/" + p.id; a.style.textDecoration = "none";
+      a.append(el("h4", "b", p.name), el("p", "s", p.for));
+      const bar = el("div", "bar"); const fill = el("i"); fill.style.width = (done / 7 * 100) + "%"; bar.appendChild(fill);
+      a.append(bar, el("p", "note", done >= 7 ? "Finished. Tap to read again." : done ? `Day ${done + 1} of 7 is next` : "Not started"));
+      box.appendChild(a);
+    });
+    return;
+  }
+  const done = progress(plan.id);
+  const i = dayArg != null ? dayArg : Math.min(done, 6);
+  const d = plan.days[i];
+  $("pd-plan").textContent = plan.name; $("pd-title").textContent = `Day ${i + 1}: ${d.h}`;
+  $("pd-verse").textContent = d.v; $("pd-ref").textContent = d.ref; $("pd-thought").textContent = d.t; $("pd-prayer").textContent = d.p;
+  $("pd-urgent").hidden = !plan.urgent;
+  const dots = $("pd-dots"); dots.replaceChildren();
+  plan.days.forEach((_, n) => {
+    const b = el("button", n < done ? "done" : "", String(n + 1)); b.type = "button"; b.setAttribute("aria-label", "Day " + (n + 1));
+    if (n === i) b.setAttribute("aria-current", "true");
+    b.addEventListener("click", () => { renderPlans(plan.id, n); });
+    dots.appendChild(b);
+  });
+  const next = $("pd-next");
+  next.textContent = i < 6 ? "Done for today — next day" : "Finish the plan";
+  next.onclick = () => {
+    store.set("rh_plan_" + plan.id, Math.max(done, i + 1));
+    if (i < 6) { renderPlans(plan.id, i + 1); window.scrollTo(0, 0); } else location.hash = "#steps";
+  };
+}
+onShow.plans = arg => renderPlans(arg);
+
+/* ───────────── LOCAL HELP ───────────── */
+HELP.forEach(([label, query]) => {
+  const b = el("button", "ghost", label); b.type = "button"; b.style.borderRadius = "12px"; b.style.padding = "13px 16px"; b.style.textAlign = "left";
+  b.addEventListener("click", () => {
+    const zip = $("zip").value.trim();
+    if (!/^\d{5}$/.test(zip)) { $("zip-msg").textContent = "Enter a 5-digit zip code first."; $("zip").focus(); return; }
+    $("zip-msg").textContent = "";
+    window.open("https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(`${query} near ${zip}`), "_blank", "noopener");
+  });
+  $("help-btns").appendChild(b);
+});
+
+/* ───────────── QR CODE ───────────── */
+onShow.qr = () => {
+  const url = (SITE_URL || location.href.split("#")[0]) + "#pray";
+  $("qr-url").textContent = "Opens: " + url;
+  try {
+    const q = qrcode(0, "M"); q.addData(url); q.make();
+    $("qr").innerHTML = q.createSvgTag({ cellSize: 8, margin: 0, scalable: true });
+  } catch (e) { $("qr").textContent = "The code couldn't be drawn. Check your connection and reload."; }
+};
+$("qr-dl").addEventListener("click", () => {
+  const svg = $("qr").querySelector("svg"); if (!svg) return;
+  const a = el("a"); a.href = URL.createObjectURL(new Blob([svg.outerHTML], { type: "image/svg+xml" })); a.download = "restored-hope-prayer-qr.svg"; a.click();
+});
+
+/* ───────────── OPENING ─────────────
+   Plays once per visit, on the home screen only. Tap skips it.
+   OPENING picks which one: 0 light and words, 1 the words fall away,
+   2 the stone rolls away, 3 lightning reveals the cross, 4 a direct question.
+   Adding ?intro=N to the address plays opening N every time (for previewing). */
+const OPENING = 3;
+(function intro() {
+  const box = $("intro");
+  const q = new URLSearchParams(location.search).get("intro");
+  const forced = q !== null && /^[0-4]$/.test(q);
+  const which = forced ? +q : OPENING;
+  const seen = (() => { try { return sessionStorage.getItem("rh_intro"); } catch (e) { return null; } })();
+  const home = !location.hash || location.hash === "#home";
+  if (!forced && (seen || !home || matchMedia("(prefers-reduced-motion: reduce)").matches)) { box.remove(); return; }
+  if (!forced) { try { sessionStorage.setItem("rh_intro", "1"); } catch (e) {} }
+  const risen = (d1, d2) => `<p class="mid in" style="--d:${d1}s">The Lord is close</p><p class="mid red in" style="--d:${d2}s">to the brokenhearted.</p><span class="ref in" style="--d:${d2 + 0.9}s">Psalm 34:18</span>`;
+  let html, dur, after;
+  if (which === 1) {
+    const n = CARRY.length, step = 0.14, start = 1.5;
+    const words = CARRY.map((c, i) => `<span style="--d:${(i * 0.06).toFixed(2)}s;--s:${(start + i * step).toFixed(2)}s;--f:${(start + 0.22 + i * step).toFixed(2)}s;--r:${i % 2 ? 14 : -11}deg">${c.k}</span>`).join("");
+    const end = start + n * step + 0.7;
+    html = `<div class="stage"><div class="words">${words}</div></div>
+      <div class="fill final"><div><p class="mid in" style="--d:${end.toFixed(2)}s">The Lord is close to the brokenhearted.</p><span class="ref in" style="--d:${(end + 0.7).toFixed(2)}s">Psalm 34:18</span></div></div>`;
+    dur = (end + 3) * 1000;
+  } else if (which === 2) {
+    html = `<div class="stage"><div class="tomb"><div class="light"></div><div class="stone"></div></div>${risen(2.8, 4)}</div>`;
+    dur = 6400;
+  } else if (which === 3) {
+    html = `<div class="fill storm"></div><div class="fill scrim"></div><div class="fill flash"></div><div class="low">${risen(3.1, 4.2)}</div>`;
+    dur = 6600;
+  } else if (which === 4) {
+    html = `<div class="stage" style="display:grid"><p class="mid inout" style="grid-area:1/1;--d:.4s;--len:2.8s">What are you carrying?</p><p class="mid red in" style="grid-area:1/1;margin:0;--d:3.3s">You don't have to carry it alone.</p></div>`;
+    dur = 5900; after = () => { location.hash = "#hope"; };
+  } else {
+    html = `<div class="glow"></div><div class="stage">${risen(0.6, 2.2)}</div>`;
+    dur = 4800;
+  }
+  box.innerHTML = html + `<small class="hint in" style="--d:2.5s">Tap to skip</small>`;
+  box.hidden = false;
+  let done = false;
+  const finish = () => { if (done) return; done = true; box.classList.add("out"); setTimeout(() => box.remove(), 850); if (after) after(); };
+  box.addEventListener("click", finish);
+  setTimeout(finish, dur);
+})();
+
+route();
+</script>
+</body>
+</html>
