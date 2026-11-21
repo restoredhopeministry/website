@@ -69,7 +69,7 @@
   @keyframes introRoll { to { transform: translateX(122%) rotate(150deg); } }
   @keyframes introBloom { to { box-shadow: 0 0 120px 50px rgba(244,217,166,.6); } }
   /* 3: lightning reveals the cross */
-  #intro .storm { background: url(images/cross.jpg?v=2) 50% 25% / cover; opacity: 0; animation: introStorm 3s linear .5s forwards; }
+  #intro .storm { background: url(images/cross.jpg?v=3) 50% 25% / cover; opacity: 0; animation: introStorm 3s linear .5s forwards; }
   #intro .flash { background: #fff; opacity: 0; animation: introFlash 3s linear .5s forwards; }
   #intro .scrim { background: linear-gradient(transparent 38%, #000 86%); }
   #intro .low { position: absolute; left: 0; right: 0; bottom: 12vh; padding: 0 24px; }
@@ -275,7 +275,7 @@
 <div class="view" id="v-home">
   <header class="hero">
     <div class="sky" aria-hidden="true">
-      <img src="images/cross.jpg?v=2" alt="">
+      <img src="images/cross.jpg?v=3" alt="">
     </div>
     <div class="wrap hero-text">
       <h1 class="brand">Restored <span>Hope</span></h1>
@@ -766,7 +766,7 @@ const store = {
 (function drawCross() {
   const NS = "http://www.w3.org/2000/svg";
   const add = (parent, tag, attrs) => { const n = document.createElementNS(NS, tag); for (const a in attrs) n.setAttribute(a, attrs[a]); $(parent).appendChild(n); };
-  if (!$("rays")) return; // hero now uses images/cross.jpg?v=2
+  if (!$("rays")) return; // hero now uses images/cross.jpg?v=3
   const cx = 120, cy = 105;
   // Burst of light: thin spikes of uneven length
   for (let i = 0; i < 44; i++) {
