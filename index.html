@@ -22,7 +22,7 @@
     --accent-title: #d81f26;
     --accent-deep: #8e0f14;
     --accent-strike: #d81f26;
-    --cross-art: url(images/cross.png?v=7);
+    --cross-art: url(images/lightning-cross-red.webp);
     --glow: #f4d9a6;
     --brush: "Permanent Marker", "Segoe Print", cursive;
     --label: "Oswald", "Arial Narrow", sans-serif;
@@ -34,7 +34,7 @@
     --accent-title: #914cc5;
     --accent-deep: #4c245b;
     --accent-strike: #914cc5;
-    --cross-art: url(images/cross-plum.png?v=2);
+    --cross-art: url(images/lightning-cross-purple.png);
   }
   :root[data-theme="forest"] {
     --accent: #13704b;
@@ -42,7 +42,15 @@
     --accent-title: #19a66c;
     --accent-deep: #214b32;
     --accent-strike: #19a66c;
-    --cross-art: url(images/cross-forest.png?v=2);
+    --cross-art: url(images/lightning-cross-green.png);
+  }
+  :root[data-theme="gold"] {
+    --accent: #926418;
+    --accent-text: #f4cc6e;
+    --accent-title: #e9b63a;
+    --accent-deep: #5f410e;
+    --accent-strike: #e9b63a;
+    --cross-art: url(images/lightning-cross-gold.png);
   }
   * { box-sizing: border-box; }
   body {
@@ -118,6 +126,15 @@
   .hero-text { position: relative; z-index: 2; margin-top: -88px; padding-bottom: 8px; }
   @media (min-width: 700px) {
     .sky { height: 72vh; min-height: 460px; max-height: 760px; width: calc(72vh * .9); min-width: 350px; max-width: 684px; }
+    .sky .cross-art {
+      inset-inline: 0;
+      width: min(100%, calc((clamp(460px, 72vh, 760px) - 88px) * .778));
+      margin-inline: auto;
+      background-size: 100% 100%;
+      mask-image: linear-gradient(90deg, transparent, #000 13%, #000 87%, transparent),
+                  linear-gradient(180deg, transparent, #000 9%, #000 85%, transparent);
+      mask-composite: intersect;
+    }
   }
   .brand { font: 400 clamp(44px, 13vw, 68px)/.95 var(--brush); margin: 0; letter-spacing: .5px; transform: rotate(-3deg); }
   .brand span { color: var(--accent-title); display: block; }
@@ -251,7 +268,16 @@
   .bar i { display: block; height: 100%; background: var(--accent); }
 
   .shirt { text-align: center; }
-  .shirt svg { width: 150px; margin: 4px auto 12px; display: block; }
+  .shirt-preview { margin: 16px 0 0; }
+  .shirt-preview img { display: block; width: 100%; height: auto; }
+  .shirt-frame { position: relative; overflow: hidden; border-radius: 10px; background: #131314; }
+  .shirt-preview[data-shirt="red"] .shirt-frame { aspect-ratio: 1024 / 489; }
+  .shirt-preview[data-shirt="purple"] .shirt-frame { aspect-ratio: 1024 / 496; }
+  .shirt-preview[data-shirt="green"] .shirt-frame { aspect-ratio: 1024 / 486; }
+  .shirt-preview:not([data-shirt="gold"]) img { position: absolute; inset: 0 auto auto 0; }
+  .shirt-preview[data-shirt="purple"] img { transform: translateY(-32.16%); }
+  .shirt-preview[data-shirt="green"] img { transform: translateY(-64.65%); }
+  .shirt-preview figcaption { margin-top: 10px; color: var(--muted); }
   #qr { background: #fff; border-radius: 12px; padding: 12px; width: 220px; margin: 0 auto 14px; }
   #qr svg { display: block; width: 100%; height: auto; }
 
@@ -263,7 +289,7 @@
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
     background: rgba(12,12,13,.94); backdrop-filter: blur(10px);
     border-top: 1px solid var(--line);
-    display: grid; grid-template-columns: repeat(5, 1fr);
+    display: grid; grid-template-columns: repeat(4, 1fr);
     padding-bottom: env(safe-area-inset-bottom);
   }
   nav.tabs a {
@@ -317,14 +343,13 @@
       </div>
     </div>
     <div class="block">
-      <p class="eyebrow">Today's word</p>
+      <p class="eyebrow">Verse of the day</p>
       <div class="card votd">
         <blockquote id="votd-text"></blockquote>
         <cite id="votd-ref"></cite>
         <p class="note" id="votd-note" hidden></p>
         <div class="row">
           <button class="ghost" id="share" type="button">Share this verse</button>
-          <a class="ghost" href="#hope">Find a verse for what I'm facing</a>
         </div>
       </div>
       <form class="card" id="signup" style="margin-top:12px">
@@ -357,6 +382,15 @@
         <div class="card"><h4 class="b">Capture your thoughts</h4><p class="s">Not every thought is yours to keep. Bring each one to Christ and hold it up against what He says is true.</p><cite>2 Corinthians 10:5</cite></div>
       </div>
     </div>
+    <section class="block" aria-labelledby="home-wall-title">
+      <p class="eyebrow">Pray together</p>
+      <h3 class="title" id="home-wall-title">Prayer wall</h3>
+      <div class="stack" id="home-wall" aria-live="polite"></div>
+      <div class="row" style="margin-top:16px">
+        <a class="cta plain" href="#wall">Share a prayer request</a>
+        <a class="ghost" href="#wall/answered">Answered prayers</a>
+      </div>
+    </section>
   </main>
 </div>
 
@@ -415,14 +449,18 @@
     <button type="button" data-k="requests">Requests</button>
     <button type="button" data-k="answered">Answered</button>
   </div>
-  <p class="preview" id="wall-preview">Preview mode: posts are saved on this device only. Nobody else can see them until the wall is connected to a database.</p>
+  <p class="lede">The ministry reviews each submission before it appears publicly. <a href="#pray">Send a private prayer request instead</a>.</p>
   <form class="card" id="wall-form">
+    <fieldset id="wall-fields" disabled style="border:0;padding:0;margin:0;min-width:0">
     <label class="f" for="w-text" id="w-label"></label>
     <textarea id="w-text" required maxlength="600"></textarea>
     <label class="f" for="w-name">First name (optional)</label>
     <input id="w-name" type="text" maxlength="30" placeholder="Anonymous">
-    <button class="cta plain" type="submit" style="margin-top:16px" id="w-btn"></button>
-    <p class="note" style="text-align:center">Please don't post full names, addresses or phone numbers.</p>
+    <label class="check"><input id="w-consent" type="checkbox" required><span>I understand this post can be seen by anyone if approved.</span></label>
+    <button class="cta plain" type="submit" style="margin-top:16px" id="w-btn">Send for review</button>
+    <p class="note">Please leave out full names, addresses, phone numbers and other private details.</p>
+    </fieldset>
+    <p class="note" id="wall-message" role="status">Checking whether the public wall is open…</p>
   </form>
   <div class="stack" id="wall-list" style="margin-top:16px"></div>
 </div></div>
@@ -599,9 +637,30 @@
     </svg>
     <p class="s" style="margin-bottom:16px">Every shirt starts a conversation. "Let me pray with you" is on the sleeve — so someone who needs it can ask.</p>
     <!-- Set these two links to your store and giving pages. -->
-    <a class="cta" href="#support"><b>Get the shirt</b></a>
+    <a class="cta" href="#shirts"><b>See shirt colors</b></a>
     <div class="row" style="justify-content:center"><a class="ghost" href="#support">Give to the ministry</a></div>
   </div>
+</div></div>
+
+<!-- ═════════ SHIRTS ═════════ -->
+<div class="view" id="v-shirts"><div class="wrap">
+  <a class="back" href="#support">← Support us</a>
+  <p class="eyebrow">Restored Hope Ministry</p>
+  <h3 class="title">Restored Hope shirts</h3>
+  <div class="card">
+    <label for="shirt-color">Shirt color</label>
+    <select id="shirt-color">
+      <option value="red">Red (#D81F26)</option>
+      <option value="purple">Royal Purple (#914CC5)</option>
+      <option value="green">Emerald Green (#19A66C)</option>
+      <option value="gold">Yellow Gold (#E9B63A)</option>
+    </select>
+    <figure class="shirt-preview" id="shirt-preview" data-shirt="red">
+      <div class="shirt-frame"><img id="shirt-mockup" src="images/shirt-colorways.png" alt="Red Restored Hope shirt, front, back and right sleeve" loading="lazy"></div>
+      <figcaption id="shirt-caption" aria-live="polite">Red (#D81F26)</figcaption>
+    </figure>
+  </div>
+  <p class="note">Shirt previews. Ordering is not open yet.</p>
 </div></div>
 
 <!-- ═════════ QR ═════════ -->
@@ -626,7 +685,6 @@
 
 <nav class="tabs" aria-label="Main">
   <a href="#home" data-tab="home"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg>Home</a>
-  <a href="#hope" data-tab="hope"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg>Find hope</a>
   <a class="pray" href="#pray" data-tab="pray"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3v18M6 9h12"/></svg>Pray</a>
   <a href="#stories" data-tab="stories"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg>Stories</a>
   <a href="#more" data-tab="more"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>More</a>
@@ -809,7 +867,19 @@ const store = {
 })();
 
 /* ───────────── ROUTER ───────────── */
-const TAB_OF = { wall: "pray", share: "stories", plans: "more", steps: "more", help: "more", helper: "more", support: "more", qr: "more" };
+const shirtColor = document.getElementById("shirt-color");
+shirtColor.addEventListener("change", () => {
+  const option = shirtColor.selectedOptions[0];
+  const preview = document.getElementById("shirt-preview");
+  const mockup = document.getElementById("shirt-mockup");
+  const source = shirtColor.value === "gold" ? "images/shirt-gold-e9b63a.png" : "images/shirt-colorways.png";
+  preview.dataset.shirt = shirtColor.value;
+  if (mockup.getAttribute("src") !== source) mockup.src = source;
+  mockup.alt = option.textContent + " Restored Hope shirt, front, back and right sleeve";
+  document.getElementById("shirt-caption").textContent = option.textContent;
+});
+
+const TAB_OF = { wall: "pray", share: "stories", plans: "more", steps: "more", help: "more", helper: "more", support: "more", shirts: "more", qr: "more" };
 const onShow = {};
 function route() {
   let [view, arg] = location.hash.slice(1).split("/");
@@ -823,15 +893,37 @@ function route() {
 window.addEventListener("hashchange", route);
 
 /* ───────────── TODAY'S WORD + SIGN-UP ───────────── */
-const today = CARRY[Math.floor(Date.now() / 864e5) % CARRY.length];
-let word = { v: today.v, ref: today.ref, note: "" };   // replaced by the ministry's own word when one is published
+const centralVerseClock = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/Chicago", year: "numeric", month: "numeric", day: "numeric",
+  hour: "numeric", hourCycle: "h23"
+});
+function verseOrder(ref) {
+  let hash = 2166136261;
+  for (const letter of ref) hash = Math.imul(hash ^ letter.charCodeAt(0), 16777619);
+  return hash >>> 0;
+}
+const dailyVerses = [...CARRY].sort((a, b) => verseOrder(a.ref) - verseOrder(b.ref));
+function dailyVerse(now = new Date()) {
+  const parts = Object.fromEntries(centralVerseClock.formatToParts(now).map(({ type, value }) => [type, value]));
+  const day = Date.UTC(+parts.year, +parts.month - 1, +parts.day) / 864e5 - (+parts.hour < 7 ? 1 : 0);
+  const index = ((day % dailyVerses.length) + dailyVerses.length) % dailyVerses.length;
+  return dailyVerses[index];
+}
+let ministryWord = null;
+let word;
 function showWord() {
+  const daily = dailyVerse();
+  const next = ministryWord || { v: daily.v, ref: daily.ref, note: "" };
+  if (word && word.v === next.v && word.ref === next.ref && word.note === next.note) return;
+  word = next;
   $("votd-text").textContent = word.v;
   $("votd-ref").textContent = word.ref;
   $("votd-note").textContent = word.note;
   $("votd-note").hidden = !word.note;
 }
 showWord();
+setInterval(showWord, 15000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) showWord(); });
 
 /* ───────────── DATABASE: TODAY'S WORD + LIVE ───────────── */
 // data.js loads separately. If it can't (no connection), the site simply keeps its built-in content.
@@ -845,11 +937,12 @@ function player(id, autoplay) {
   return f;
 }
 function applyHome(h) {
-  const themes = ["oxblood", "plum", "forest"];
+  const themes = ["oxblood", "plum", "forest", "gold"];
   const theme = h?.theme === "random" ? themes[Math.floor(Math.random() * themes.length)] : h?.theme;
   document.documentElement.dataset.theme = themes.includes(theme) ? theme : "oxblood";
   const w = h && h.word;
-  if (w && w.text) { word = { v: w.text, ref: w.ref || "", note: w.note || "" }; showWord(); }
+  ministryWord = w?.text ? { v: w.text, ref: w.ref || "", note: w.note || "" } : null;
+  showWord();
   const lv = h && h.live, on = !!(lv && lv.on && /^[\w-]{6,20}$/.test(lv.videoId || ""));
   $("live").hidden = !on; $("live-pill").hidden = !on;
   if (!on) { $("live-player").replaceChildren(); return; }
@@ -907,41 +1000,99 @@ $("prayer-form").addEventListener("submit", e => {
   location.href = `mailto:${PRAYER_EMAIL}?subject=${encodeURIComponent("Prayer request")}&body=${encodeURIComponent(body)}`;
 });
 
-/* ───────────── PRAYER WALL + ANSWERED PRAYERS ─────────────
-   Preview mode: saved in this browser only. To make the wall shared, replace
-   loadPosts / savePosts with calls to a database and remove #wall-preview. */
+/* ───────────── PRAYER WALL ───────────── */
 const WALL = {
-  requests: { key: "rh_requests", label: "What can others pray for?", btn: "Post to the wall", act: "I prayed for this", count: n => n === 1 ? "1 person prayed" : n + " people prayed", empty: "No requests yet. Be the first to ask." },
-  answered: { key: "rh_answered", label: "What did God do?", btn: "Share my answered prayer", act: "Praise God", count: n => n === 1 ? "1 person rejoiced" : n + " people rejoiced", empty: "No answered prayers shared yet. If God has come through for you, tell it here." }
+  requests: { label: "What can others pray for?", act: "I prayed for this", empty: "No approved requests are on the wall yet." },
+  answered: { label: "What did God do?", act: "Praise God", empty: "No answered prayers are on the wall yet." }
 };
 let wallKind = "requests";
-const loadPosts = kind => store.get(WALL[kind].key, []);
-const savePosts = (kind, posts) => store.set(WALL[kind].key, posts);
-function renderWall() {
-  const cfg = WALL[wallKind], posts = loadPosts(wallKind), list = $("wall-list");
-  document.querySelectorAll("#wall-seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.k === wallKind)));
-  $("w-label").textContent = cfg.label; $("w-btn").textContent = cfg.btn;
+let wallPosts = null;
+let wallFetchedAt = 0;
+let wallLoading = null;
+let wallUnavailable = false;
+function setWallAvailable(available) {
+  $("wall-fields").disabled = !available;
+  const message = $("wall-message");
+  if (!available) {
+    message.textContent = "Public submissions are unavailable right now. You can still send a private prayer request.";
+  } else if (message.textContent.startsWith("Checking whether") || message.textContent.startsWith("Public submissions")) {
+    message.textContent = "";
+  }
+}
+
+function paintWall(list, kind, maxPosts = Infinity) {
+  const cfg = WALL[kind];
+  const posts = wallPosts?.filter(post => post.kind === kind).slice(0, maxPosts) || [];
   list.replaceChildren();
-  if (!posts.length) { list.appendChild(el("div", "card empty", cfg.empty)); return; }
-  posts.forEach(p => {
+  if (!posts.length) {
+    const message = wallUnavailable ? "The prayer wall is unavailable right now. You can still send a private prayer request." :
+      wallPosts ? cfg.empty : "Loading prayers…";
+    list.appendChild(el("div", "card empty", message));
+    return;
+  }
+  posts.forEach(post => {
     const card = el("article", "card post");
-    card.appendChild(el("p", "", p.text));
+    card.appendChild(el("p", "", post.text));
     const meta = el("div", "meta");
-    meta.appendChild(el("span", "", `${p.name || "Anonymous"} · ${new Date(p.at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}${p.n ? " · " + cfg.count(p.n) : ""}`));
-    const b = el("button", "prayed", p.mine ? "✓ " + cfg.act : cfg.act); b.type = "button"; b.setAttribute("aria-pressed", String(!!p.mine));
-    b.addEventListener("click", () => { p.mine = !p.mine; p.n = Math.max(0, (p.n || 0) + (p.mine ? 1 : -1)); savePosts(wallKind, posts); renderWall(); });
-    meta.appendChild(b); card.appendChild(meta); list.appendChild(card);
+    meta.appendChild(el("span", "", post.name || "Anonymous"));
+    const key = "rh_prayed_" + post.id;
+    const action = el("button", "prayed"); action.type = "button";
+    function reflectReaction() {
+      const prayed = store.get(key, false);
+      action.setAttribute("aria-pressed", String(prayed));
+      action.textContent = prayed ? "✓ " + cfg.act : cfg.act;
+    }
+    action.addEventListener("click", () => {
+      store.set(key, !store.get(key, false));
+      reflectReaction();
+    });
+    reflectReaction();
+    meta.appendChild(action);
+    card.appendChild(meta);
+    list.appendChild(card);
   });
 }
-document.querySelectorAll("#wall-seg button").forEach(b => b.addEventListener("click", () => { wallKind = b.dataset.k; renderWall(); }));
-$("wall-form").addEventListener("submit", e => {
+function renderWall() {
+  document.querySelectorAll("#wall-seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.k === wallKind)));
+  $("w-label").textContent = WALL[wallKind].label;
+  paintWall($("wall-list"), wallKind);
+  paintWall($("home-wall"), "requests", 3);
+}
+function loadWall() {
+  renderWall();
+  if (wallLoading || Date.now() - wallFetchedAt < 60e3) return;
+  wallLoading = withTimeout(data.then(api => api.getWallPosts()), 8000)
+    .then(posts => { wallPosts = posts; wallFetchedAt = Date.now(); wallUnavailable = false; setWallAvailable(true); })
+    .catch(() => { wallUnavailable = true; setWallAvailable(false); })
+    .finally(() => { wallLoading = null; renderWall(); });
+}
+document.querySelectorAll("#wall-seg button").forEach(b => b.addEventListener("click", () => {
+  wallKind = b.dataset.k;
+  if (!$("wall-fields").disabled) $("wall-message").textContent = "";
+  loadWall();
+}));
+$("wall-form").addEventListener("submit", async e => {
   e.preventDefault();
-  const text = $("w-text").value.trim(); if (!text) return;
-  const posts = loadPosts(wallKind);
-  posts.unshift({ text, name: $("w-name").value.trim(), at: Date.now(), n: 0 });
-  savePosts(wallKind, posts); e.target.reset(); renderWall();
+  const form = e.currentTarget;
+  const text = $("w-text").value.trim();
+  if ($("wall-fields").disabled || !text || !$("w-consent").checked) return;
+  const post = { kind: wallKind, text, name: $("w-name").value.trim() };
+  const submit = $("w-btn");
+  submit.disabled = true;
+  $("wall-message").textContent = "Sending for review…";
+  try {
+    const api = await withTimeout(data, 8000);
+    await api.submitWallPost(post);
+    form.reset();
+    $("wall-message").textContent = "Sent for review. It will appear on the public wall only if the ministry approves it.";
+  } catch {
+    $("wall-message").textContent = "The request could not be sent. Try again or send a private prayer request.";
+  } finally {
+    submit.disabled = false;
+  }
 });
-onShow.wall = arg => { wallKind = arg === "answered" ? "answered" : "requests"; renderWall(); };
+onShow.wall = arg => { wallKind = arg === "answered" ? "answered" : "requests"; loadWall(); };
+onShow.home = loadWall;
 
 /* ───────────── STORIES ───────────── */
 const storyTags = ["All", ...STORY_TAGS];
@@ -1127,7 +1278,7 @@ const OPENING = 1;
 route();
 </script>
 <script type="module">
-  import * as api from "./data.js?v=2";
+  import * as api from "./data.js?v=4";
   window.dispatchEvent(new CustomEvent("rh-data", { detail: api }));
 </script>
 </body>

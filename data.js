@@ -52,7 +52,7 @@ export function submitStory({ name, title, tag, note, videoUrl }) {
 
 // ── What only the ministry can do (the database refuses anyone else) ──
 export const setWord = word => setDoc(home(), { word: word ? { ...word, at: serverTimestamp() } : deleteField() }, { merge: true });
-export const COLOR_SCHEMES = ["oxblood", "plum", "forest", "random"];
+export const COLOR_SCHEMES = ["oxblood", "plum", "forest", "gold", "random"];
 export function setTheme(theme) {
   if (!COLOR_SCHEMES.includes(theme)) throw new Error("Unknown color scheme");
   return setDoc(home(), { theme }, { merge: true });
@@ -66,3 +66,14 @@ export const removeStory = id => deleteDoc(doc(db, "stories", id));
 export function addStory({ name, title, tag, note, videoUrl }) {
   return addDoc(stories(), { name, title, tag, note, videoUrl, consent: true, status: "approved", createdAt: serverTimestamp(), approvedAt: serverTimestamp() });
 }
+
+const wall = () => collection(db, "prayerWall");
+export async function getWallPosts(status = "approved") {
+  if (status !== "approved" && status !== "pending") throw new Error("Unknown review status");
+  return rows(await getDocs(query(wall(), where("status", "==", status), limit(60)))).sort(newest(status === "approved" ? "approvedAt" : "createdAt"));
+}
+export function submitWallPost({ kind, name, text }) {
+  return addDoc(wall(), { kind, name, text, consent: true, status: "pending", createdAt: serverTimestamp() });
+}
+export const approveWallPost = id => updateDoc(doc(wall(), id), { status: "approved", approvedAt: serverTimestamp() });
+export const removeWallPost = id => deleteDoc(doc(wall(), id));

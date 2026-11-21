@@ -106,22 +106,24 @@
 
   <h2>Website colors</h2>
   <form class="card" id="theme-form">
-    <p>Choose the colors everyone will see, or choose Random to pick one of the three each time the site loads. It can take up to three minutes for the new colors to show when someone opens or refreshes the site.</p>
+    <p>Choose the colors everyone will see, or choose Random to pick one of the four each time the site loads. It can take up to three minutes for the new colors to show when someone opens or refreshes the site.</p>
     <label for="site-theme">Color scheme</label>
     <select id="site-theme" disabled>
       <option value="oxblood">Red (#D81F26)</option>
       <option value="plum">Royal Purple (#914CC5)</option>
       <option value="forest">Emerald Green (#19A66C)</option>
-      <option value="random">Random (all three colors)</option>
+      <option value="gold">Gold (#E9B63A)</option>
+      <option value="random">Random (all four colors)</option>
     </select>
     <button class="btn" type="submit" id="theme-save" disabled>Save website colors</button>
     <p class="msg" id="theme-msg" role="status"></p>
   </form>
 
-  <h2>Today's word</h2>
+  <h2>Verse of the day</h2>
   <form class="card" id="word-form">
+    <p>Publish a verse to replace the automatic one. Your verse stays up until you take it down.</p>
     <div class="now" id="word-now" hidden><q id="word-now-text"></q><cite id="word-now-ref"></cite></div>
-    <p id="word-none">Nothing of yours is posted right now. The website is showing one of its built-in verses.</p>
+    <p id="word-none">Nothing of yours is posted right now. The website picks a verse each day at 7:00 a.m. Central Time.</p>
     <label for="w-ref">Where it's from <small>(for example: Psalm 34:18)</small></label>
     <input id="w-ref" type="text" maxlength="80">
     <label for="w-text">The verse or word</label>
@@ -172,7 +174,14 @@
   <h2>Testimonies on the website <span class="count" id="live-count">0</span></h2>
   <div id="approved"></div>
 
-  <h2>Prayer requests</h2>
+  <h2>Prayer wall</h2>
+  <p>Read each post before approving it. Approved posts are public. If a post includes private information, decline it.</p>
+  <h3>Waiting for review</h3>
+  <div id="wall-pending" aria-live="polite"></div>
+  <h3>On the public wall</h3>
+  <div id="wall-approved" aria-live="polite"></div>
+
+  <h2>Private prayer requests</h2>
   <div class="card">
     <h3>They arrive as email</h3>
     <p>Each request comes to the ministry inbox with the subject <b>Prayer request</b>. Look in the <b>Spam</b> folder too. New senders sometimes land there.</p>
@@ -267,7 +276,7 @@
 </div>
 
 <script type="module">
-import { app, ADMIN_EMAIL, TAGS, ytId, ytEmbed, getHome, getStories, getPending, setWord, setLive, COLOR_SCHEMES, setTheme, approveStory, removeStory, addStory } from "./data.js?v=2";
+import { app, ADMIN_EMAIL, TAGS, ytId, ytEmbed, getHome, getStories, getPending, setWord, setLive, COLOR_SCHEMES, setTheme, approveStory, removeStory, addStory, getWallPosts, approveWallPost, removeWallPost } from "./data.js?v=4";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
 const $ = id => document.getElementById(id);
@@ -302,7 +311,7 @@ onAuthStateChanged(auth, async user => {
   $("me").textContent = user.email;
 
   $("theme-msg").textContent = "Loading website colors…";
-  check(); loadHome(); loadPending(); loadApproved();
+  check(); loadHome(); loadPending(); loadApproved(); loadPrayerWall();
 });
 
 /* ── Is the website up? Loads a picture from it. ── */
@@ -386,7 +395,7 @@ $("word-form").addEventListener("submit", async e => {
   } catch (err) { $("word-msg").textContent = failed; }
 });
 $("word-clear").addEventListener("click", async () => {
-  if (!confirm("Take your word down? The website will go back to its built-in verses.")) return;
+  if (!confirm("Take your word down? The website will return to the automatic daily verse.")) return;
   try { await setWord(null); await loadHome(); $("word-msg").textContent = "Taken down."; } catch (err) { $("word-msg").textContent = failed; }
 });
 
@@ -424,6 +433,42 @@ function button(text, quiet, onClick) {
   const b = el("button", "btn" + (quiet ? " quiet" : ""), text); b.type = "button";
   b.addEventListener("click", async () => { b.disabled = true; try { await onClick(); } catch (e) { alert(failed); b.disabled = false; } });
   return b;
+}
+async function loadPrayerWall() {
+  for (const status of ["pending", "approved"]) {
+    const box = $("wall-" + status);
+    try {
+      const posts = await getWallPosts(status);
+      box.replaceChildren();
+      if (!posts.length) box.appendChild(el("div", "card", status === "pending" ? "No posts are waiting for review." : "No posts are on the public wall."));
+      for (const post of posts) {
+        const card = el("div", "card");
+        card.append(
+          el("span", "tag", post.kind === "answered" ? "Answered prayer" : "Prayer request"),
+          el("p", "", post.text),
+          el("p", "", post.name || "Anonymous")
+        );
+        const actions = el("div", "row two actions");
+        if (status === "pending") actions.appendChild(button("Approve and show on wall", false, async () => {
+          await approveWallPost(post.id);
+          await loadPrayerWall();
+        }));
+        const removeLabel = status === "pending" ? "Decline" : "Take off the wall";
+        actions.appendChild(button(removeLabel, true, async () => {
+          if (!confirm(status === "pending" ? "Decline and delete this submission?" : "Remove this post from the public wall?")) {
+            actions.lastElementChild.disabled = false;
+            return;
+          }
+          await removeWallPost(post.id);
+          await loadPrayerWall();
+        }));
+        card.appendChild(actions);
+        box.appendChild(card);
+      }
+    } catch {
+      box.replaceChildren(el("div", "card", "Couldn't load these prayer wall posts. Check your internet and reload the page."));
+    }
+  }
 }
 async function loadPending() {
   const box = $("pending");
