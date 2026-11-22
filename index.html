@@ -34,7 +34,7 @@
     --accent-title: #914cc5;
     --accent-deep: #4c245b;
     --accent-strike: #914cc5;
-    --cross-art: url(images/lightning-cross-purple.png);
+    --cross-art: url(images/lightning-cross-purple.jpg);
   }
   :root[data-theme="forest"] {
     --accent: #13704b;
@@ -42,7 +42,7 @@
     --accent-title: #19a66c;
     --accent-deep: #214b32;
     --accent-strike: #19a66c;
-    --cross-art: url(images/lightning-cross-green.png);
+    --cross-art: url(images/lightning-cross-green.jpg);
   }
   :root[data-theme="gold"] {
     --accent: #926418;
@@ -50,7 +50,7 @@
     --accent-title: #e9b63a;
     --accent-deep: #5f410e;
     --accent-strike: #e9b63a;
-    --cross-art: url(images/lightning-cross-gold.png);
+    --cross-art: url(images/lightning-cross-gold.jpg);
   }
   * { box-sizing: border-box; }
   body {
@@ -97,15 +97,15 @@
   @keyframes introRoll { to { transform: translateX(122%) rotate(150deg); } }
   @keyframes introBloom { to { box-shadow: 0 0 120px 50px rgba(244,217,166,.6); } }
   /* 3: lightning reveals the cross */
-  #intro { perspective: 700px; perspective-origin: 50% 100%; }   /* same looking-up view as the home screen */
-  #intro .storm { background: var(--cross-art) 50% 0% / cover; opacity: 0; animation: introStorm 3s linear .5s forwards; transform-origin: 50% 100%; transform: rotateX(14deg) scale(1.12, 1.16); inset: -20% -14% 0 -14%; }
-  /* Wide screens: show the cross as an upright picture in the middle, fading into black at the sides. */
-  @media (min-aspect-ratio: 1/1) {
-    #intro .storm { inset: -8% auto 0 50%; width: 88vh; margin-left: -44vh; -webkit-mask-image: linear-gradient(90deg, transparent 2%, #000 24%, #000 76%, transparent 98%); mask-image: linear-gradient(90deg, transparent 2%, #000 24%, #000 76%, transparent 98%); }
+  #intro .storm {
+    inset: auto; left: 50%; top: 43%; width: min(100vw, 64vh); aspect-ratio: 1106 / 1422; transform: translate(-50%, -50%);
+    background: var(--cross-art) center / 100% 100% no-repeat; opacity: 0; animation: introStorm 3s linear .5s forwards;
+    -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent 100%);
+    mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent 100%);
   }
   #intro .flash { background: #fff; opacity: 0; animation: introFlash 3s linear .5s forwards; }
-  #intro .scrim { background: linear-gradient(transparent 38%, #000 86%); }
-  #intro .low { position: absolute; left: 0; right: 0; bottom: 12vh; padding: 0 24px; }
+  #intro .scrim { background: linear-gradient(transparent 62%, #000 92%); }
+  #intro .low { position: absolute; left: 0; right: 0; bottom: 9vh; padding: 0 24px; }
   @keyframes introStorm { 0%, 9% { opacity: 0; } 10% { opacity: .85; } 17% { opacity: 0; } 39% { opacity: 0; } 40% { opacity: 1; } 45% { opacity: .2; } 48% { opacity: .8; } 56% { opacity: 0; } 75% { opacity: 0; } 76%, 100% { opacity: 1; } }
   @keyframes introFlash { 0%, 9% { opacity: 0; } 10% { opacity: .35; } 15% { opacity: 0; } 39% { opacity: 0; } 40% { opacity: .45; } 46% { opacity: 0; } 75% { opacity: 0; } 76% { opacity: .5; } 88%, 100% { opacity: 0; } }
   #back-openings { position: fixed; left: 12px; bottom: calc(84px + env(safe-area-inset-bottom)); z-index: 50; background: var(--glow); color: #111; border-radius: 999px; padding: 10px 16px; font: 600 13px/1 var(--body); text-decoration: none; box-shadow: 0 6px 20px rgba(0,0,0,.6); }
@@ -126,24 +126,41 @@
   }
   .home-links a:first-child { background: var(--accent-deep); border-color: var(--accent); }
   .home-links a:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; }
-  .sky {
-    position: relative; height: 66vh; min-height: 440px; max-height: 740px; max-width: 640px; margin: 0 auto;
-    overflow: hidden;
+  /* Poster: the first screen is one message and one button over a storm sky. No cross here;
+     the cross is shown whole in the opening instead. */
+  .hero { min-height: 70vh; min-height: 70svh; display: flex; flex-direction: column; isolation: isolate; }
+  .hero::before {   /* storm picture; every edge fades out to nothing so it melts into the page */
+    content: ""; position: absolute; inset: 0 auto 0 50%; width: min(100%, 760px); transform: translateX(-50%); z-index: -1;
+    background: url(images/storm.jpg?v=1) 50% 12% / cover no-repeat;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent), linear-gradient(transparent, #000 12%, #000 56%, transparent 94%);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent), linear-gradient(transparent, #000 12%, #000 56%, transparent 94%);
+    mask-composite: intersect;
   }
-  .sky .cross-art { position: absolute; inset: 0 0 88px; background: var(--cross-art) center / contain no-repeat; }
-  .hero-text { position: relative; z-index: 2; margin-top: -88px; padding-bottom: 8px; }
-  @media (min-width: 700px) {
-    .sky { height: 72vh; min-height: 460px; max-height: 760px; width: calc(72vh * .9); min-width: 350px; max-width: 684px; }
-    .sky .cross-art {
-      inset-inline: 0;
-      width: min(100%, calc((clamp(460px, 72vh, 760px) - 88px) * .778));
-      margin-inline: auto;
-      background-size: 100% 100%;
-      mask-image: linear-gradient(90deg, transparent, #000 13%, #000 87%, transparent),
-                  linear-gradient(180deg, transparent, #000 9%, #000 85%, transparent);
-      mask-composite: intersect;
-    }
+  .hero .brand, .hero h2 { text-shadow: 0 2px 16px rgba(0,0,0,.9); }
+  /* Moving lightning: the sky sits dim, then flickers bright twice every ten seconds. */
+  .hero::before { animation: stormFlicker 10s linear infinite; }
+  .hero::after {   /* the burst of light inside the cloud during a strike */
+    content: ""; position: absolute; inset: 0 auto 38% 50%; width: min(100%, 760px); transform: translateX(-50%); z-index: -1;
+    background: radial-gradient(ellipse 55% 55% at 64% 22%, rgba(255,255,255,.6), transparent 70%), radial-gradient(ellipse 40% 45% at 22% 30%, rgba(255,255,255,.35), transparent 70%);
+    mix-blend-mode: screen; opacity: 0; animation: stormFlash 10s linear infinite;
   }
+  @keyframes stormFlicker {
+    0%, 55%, 100% { filter: brightness(.8); }
+    56% { filter: brightness(1.85); } 57.2% { filter: brightness(.9); } 58.4% { filter: brightness(1.55); } 62% { filter: brightness(.8); }
+    86% { filter: brightness(.8); } 86.8% { filter: brightness(1.45); } 89% { filter: brightness(.8); }
+  }
+  @keyframes stormFlash {
+    0%, 55%, 100% { opacity: 0; }
+    56% { opacity: 1; } 57.2% { opacity: .1; } 58.4% { opacity: .7; } 62% { opacity: 0; }
+    86% { opacity: 0; } 86.8% { opacity: .5; } 89% { opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { .hero::before { animation: none; } .hero::after { display: none; } }
+  .hero-text { position: relative; margin-top: auto; padding-bottom: 6px; }
+  .hero h2 { margin-bottom: 18px; }
+  .tiles.compact { gap: 10px; margin-top: 0; }
+  .tiles.compact .tile { padding: 15px 8px; font-size: 14px; }
+  .scroll-more { display: block; margin-top: 16px; font: 500 12px/1 var(--label); letter-spacing: .22em; text-transform: uppercase; color: var(--muted); text-decoration: none; }
   .brand { font: 400 clamp(44px, 13vw, 68px)/.95 var(--brush); margin: 0; letter-spacing: .5px; transform: rotate(-3deg); }
   .brand span { color: var(--accent-title); display: block; }
   .ministry {
@@ -338,30 +355,26 @@
       <a id="youtube-live" href="https://www.youtube.com/channel/UC-OnMYN_p-wZeBdWwId4DRg/streams" target="_blank" rel="noopener">YouTube / Live</a>
       <a href="#share">Submit a video testimony</a>
     </div>
-    <div class="sky" aria-hidden="true">
-      <div class="cross-art" aria-hidden="true"></div>
-    </div>
     <div class="wrap hero-text">
       <h1 class="brand">Restored <span>Hope</span></h1>
       <div class="ministry">Ministry</div>
       <h2>You are not forgotten. You are not alone.</h2>
-      <p>There is hope beyond the hurt. There is life beyond the struggle. There is love through Jesus Christ.</p>
       <a class="livepill" id="live-pill" href="#live" hidden><i></i>Live now · Watch</a>
       <a class="cta" href="#pray"><b>Let me pray with you</b><small>You don't have to carry it alone.</small></a>
-      <div class="tiles">
-        <a class="tile" href="#stories">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg>
-          Real Stories
-        </a>
-        <a class="tile" href="#shirts">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M8 4 3 7l-2 5 5 2 1-3v9h10v-9l1 3 5-2-2-5-5-3a4 4 0 0 1-8 0Z"/></svg>
-          Merch
-        </a>
-      </div>
     </div>
   </header>
 
   <main class="wrap">
+    <div class="block" id="below-poster" style="padding-top:12px">
+      <div class="tiles compact">
+        <a class="tile" href="#stories">Real stories</a>
+        <a class="tile" href="#wall">Prayer wall</a>
+        <a class="tile" href="#shirts">Merch</a>
+        <a class="tile" href="#plans">7-day plans</a>
+        <a class="tile" href="#steps">Next steps</a>
+        <a class="tile" href="#help">Find help near me</a>
+      </div>
+    </div>
     <div class="block" id="live" hidden>
       <p class="eyebrow"><i class="dot"></i>Live now</p>
       <div class="card live">
@@ -369,7 +382,7 @@
         <div class="player" id="live-player"></div>
       </div>
     </div>
-    <div class="block">
+    <div class="block" style="padding-top:22px">
       <p class="eyebrow">Verse of the day</p>
       <div class="card votd">
         <blockquote id="votd-text"></blockquote>
@@ -379,7 +392,7 @@
           <button class="ghost" id="share" type="button">Share this verse</button>
         </div>
       </div>
-      <form class="card" id="signup" style="margin-top:12px">
+      <form class="card" id="signup" style="margin-top:12px" hidden>   <!-- hidden: sign-ups are not open yet -->
         <label class="f" for="su-email">Get a verse and a prayer every morning</label>
         <div class="inline">
           <input id="su-email" type="email" required autocomplete="email" placeholder="Your email">
@@ -389,18 +402,7 @@
       </form>
     </div>
 
-    <div class="block">
-      <p class="eyebrow">Keep going</p>
-      <h3 class="title">Where do you need to start?</h3>
-      <div class="tiles" style="margin-top:0">
-        <a class="tile" href="#wall">Prayer wall<small>Ask, and pray for others</small></a>
-        <a class="tile" href="#plans">7-day plans<small>One screen a day</small></a>
-        <a class="tile" href="#steps">Next steps<small>I prayed. Now what?</small></a>
-        <a class="tile" href="#help">Find help near me<small>Churches, groups, counselors</small></a>
-      </div>
-    </div>
-
-    <div class="block">
+    <div class="block" hidden>   <!-- hidden to shorten the home screen -->
       <p class="eyebrow">The fight is real</p>
       <h3 class="title">Stand on this</h3>
       <div class="stack two">
@@ -409,7 +411,7 @@
         <div class="card"><h4 class="b">Capture your thoughts</h4><p class="s">Not every thought is yours to keep. Bring each one to Christ and hold it up against what He says is true.</p><cite>2 Corinthians 10:5</cite></div>
       </div>
     </div>
-    <section class="block" aria-labelledby="home-wall-title">
+    <section class="block" aria-labelledby="home-wall-title" hidden>   <!-- hidden to shorten the home screen; the wall has its own tile -->
       <p class="eyebrow">Pray together</p>
       <h3 class="title" id="home-wall-title">Prayer wall</h3>
       <div class="stack" id="home-wall" aria-live="polite"></div>
@@ -1305,7 +1307,7 @@ $("qr-dl").addEventListener("click", () => {
    OPENING picks which one: 0 light and words, 1 the words fall away,
    2 the stone rolls away, 3 lightning reveals the cross, 4 a direct question.
    Adding ?intro=N to the address plays opening N every time (for previewing). */
-const OPENING = 1;
+const OPENING = 3;
 (function intro() {
   const box = $("intro");
   const q = new URLSearchParams(location.search).get("intro");
