@@ -167,6 +167,36 @@
   .cross-scriptures strong { display: block; margin-bottom: 5px; font: 400 clamp(13px, 3.1vw, 21px)/1.15 var(--brush); }
   .cross-burdens { margin: clamp(30px, 7vw, 54px) auto 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 4px 12px; max-width: min(100%, 420px); list-style: none; font: 400 clamp(14px, 3.8vw, 21px)/1.2 var(--brush); }
   .cross-burdens .cross-burden-focus { flex-basis: 100%; color: #ff6667; font-size: clamp(26px, 7vw, 43px); }
+  /* Raised lettering follows the scene around the open center of the cross. */
+  .cross-lettering {
+    --letter-shadow: 0 1px #9b7865, 0 2px #64493d, 0 3px #3b2723, 0 5px 3px #170d0d, 0 8px 16px #000;
+    perspective: 750px;
+  }
+  .hero-verse { transform: rotate(-3deg); }
+  .hero-verse strong, .cross-scriptures strong, .cross-burdens li {
+    color: #fff0d9;
+    text-shadow: var(--letter-shadow);
+  }
+  .hero-verse strong {
+    letter-spacing: -.025em;
+    -webkit-text-stroke: .35px #ffe6c5;
+  }
+  .cross-scriptures {
+    grid-template-columns: minmax(0, 1fr) clamp(90px, 37%, 260px) minmax(0, 1fr);
+    margin-top: clamp(150px, 31vw, 215px);
+  }
+  .cross-scriptures figure:first-child { transform: rotateY(8deg) rotate(-4deg); }
+  .cross-scriptures figure:last-child { transform: rotateY(-8deg) rotate(4deg); }
+  .cross-scriptures figcaption { color: #f2c8ac; }
+  .cross-burdens { margin-top: clamp(48px, 9vw, 75px); row-gap: 9px; }
+  .cross-burdens li:nth-child(odd) { transform: rotate(-3deg); }
+  .cross-burdens li:nth-child(even) { transform: rotate(2deg); }
+  .cross-burdens .cross-burden-focus {
+    color: #ff6460;
+    text-shadow: 0 1px #b42f2b, 0 2px #851b1b, 0 3px #5d1214, 0 5px #340c10, 0 8px 16px #000;
+    transform: rotate(-5deg);
+    -webkit-text-stroke: .5px #ff9a87;
+  }
   .hero h2 { margin-bottom: 18px; }
   .tiles.compact { gap: 10px; margin-top: 0; }
   .tiles.compact .tile { padding: 15px 8px; font-size: 14px; }
