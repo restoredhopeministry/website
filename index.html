@@ -22,7 +22,6 @@
     --accent-title: #d81f26;
     --accent-deep: #8e0f14;
     --accent-strike: #d81f26;
-    --cross-art: url(images/lightning-cross-red.webp);
     --glow: #f4d9a6;
     --brush: "Permanent Marker", "Segoe Print", cursive;
     --label: "Oswald", "Arial Narrow", sans-serif;
@@ -34,7 +33,6 @@
     --accent-title: #914cc5;
     --accent-deep: #4c245b;
     --accent-strike: #914cc5;
-    --cross-art: url(images/lightning-cross-purple.jpg);
   }
   :root[data-theme="forest"] {
     --accent: #13704b;
@@ -42,7 +40,6 @@
     --accent-title: #19a66c;
     --accent-deep: #214b32;
     --accent-strike: #19a66c;
-    --cross-art: url(images/lightning-cross-green.jpg);
   }
   :root[data-theme="gold"] {
     --accent: #926418;
@@ -50,7 +47,6 @@
     --accent-title: #e9b63a;
     --accent-deep: #5f410e;
     --accent-strike: #e9b63a;
-    --cross-art: url(images/lightning-cross-gold.jpg);
   }
   * { box-sizing: border-box; }
   body {
@@ -98,10 +94,8 @@
   @keyframes introBloom { to { box-shadow: 0 0 120px 50px rgba(244,217,166,.6); } }
   /* 3: lightning reveals the cross */
   #intro .storm {
-    inset: auto; left: 50%; top: 43%; width: min(100vw, 64vh); aspect-ratio: 1106 / 1422; transform: translate(-50%, -50%);
-    background: var(--cross-art) center / 100% 100% no-repeat; opacity: 0; animation: introStorm 3s linear .5s forwards;
-    -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent 100%);
-    mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent 100%);
+    inset: auto; left: 50%; top: 43%; width: min(62vw, 44vh, 300px); transform: translate(-50%, -50%);
+    opacity: 0; animation: introStorm 3s linear .5s forwards;
   }
   #intro .flash { background: #fff; opacity: 0; animation: introFlash 3s linear .5s forwards; }
   #intro .scrim { background: linear-gradient(transparent 62%, #000 92%); }
@@ -126,8 +120,7 @@
   }
   .home-links a:first-child { background: var(--accent-deep); border-color: var(--accent); }
   .home-links a:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; }
-  /* Poster: the first screen is one message and one button over a storm sky. No cross here;
-     the cross is shown whole in the opening instead. */
+  /* Storm backdrop for the homepage. */
   .hero { min-height: 70vh; min-height: 70svh; display: flex; flex-direction: column; isolation: isolate; }
   .hero::before {   /* storm picture; every edge fades out to nothing so it melts into the page */
     content: ""; position: absolute; inset: 0 auto 0 50%; width: min(100%, 760px); transform: translateX(-50%); z-index: -1;
@@ -156,6 +149,14 @@
     86% { opacity: 0; } 86.8% { opacity: .5; } 89% { opacity: 0; }
   }
   @media (prefers-reduced-motion: reduce) { .hero::before { animation: none; } .hero::after { display: none; } }
+  /* Frame the back print within the red shirt mockup. */
+  .shirt-cross-art {
+    width: min(52vw, 230px);
+    aspect-ratio: 159 / 218;
+    background: url(images/shirt-colorways.png) 62.6% 3.37% / 377.36% auto no-repeat;
+    mask-image: radial-gradient(ellipse 73% 71% at center, #000 71%, transparent 100%);
+  }
+  .hero .shirt-cross-art { margin: 12px auto 0; }
   .hero-text { position: relative; margin-top: auto; padding-bottom: 6px; }
   .hero h2 { margin-bottom: 18px; }
   .tiles.compact { gap: 10px; margin-top: 0; }
@@ -356,6 +357,7 @@
       <a href="#share">Submit a video testimony</a>
     </div>
     <div class="wrap hero-text">
+      <div class="shirt-cross-art" role="img" aria-label="Cross and Scripture from the Restored Hope Ministry shirt, including Psalm 34:18"></div>
       <h1 class="brand">Restored <span>Hope</span></h1>
       <div class="ministry">Ministry</div>
       <h2>You are not forgotten. You are not alone.</h2>
@@ -1331,7 +1333,7 @@ const OPENING = 3;
     html = `<div class="stage"><div class="tomb"><div class="light"></div><div class="stone"></div></div>${risen(2.8, 4)}</div>`;
     dur = 6400;
   } else if (which === 3) {
-    html = `<div class="fill storm"></div><div class="fill scrim"></div><div class="fill flash"></div><div class="low">${risen(3.1, 4.2)}</div>`;
+    html = `<div class="fill storm shirt-cross-art"></div><div class="fill scrim"></div><div class="fill flash"></div><div class="low">${risen(3.1, 4.2)}</div>`;
     dur = 6600;
   } else if (which === 4) {
     html = `<div class="stage" style="display:grid"><p class="mid inout" style="grid-area:1/1;--d:.4s;--len:2.8s">What are you carrying?</p><p class="mid red in" style="grid-area:1/1;margin:0;--d:3.3s">You don't have to carry it alone.</p></div>`;
