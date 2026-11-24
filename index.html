@@ -439,7 +439,8 @@
 <div class="view" id="v-hope"><div class="wrap">
   <p class="eyebrow">Find hope</p>
   <h3 class="title">What are you carrying?</h3>
-  <p class="lede">Tap what's weighing on you. There's a word from God for it — and a prayer you can pray right now.</p>
+  <p class="lede">Whatever you’re carrying today, you’re welcome here. Choose what’s weighing on you to find a verse or a next step.</p>
+  <div class="row" style="margin-bottom:16px"><a class="ghost" href="#stories">Read real stories</a></div>
   <div class="chips" id="chips"></div>
   <div class="card" id="answer" hidden aria-live="polite">
     <blockquote id="a-verse"></blockquote>
@@ -513,6 +514,10 @@
   <h3 class="title">Broken. Then restored.</h3>
   <p class="lede">Firsthand stories about how Jesus Christ met people in difficult seasons and how their faith shaped what came next. Pick a topic to find a testimony.</p>
   <div class="chips" id="story-chips"></div>
+  <figure class="card" id="story-scripture" style="margin:16px 0 0" hidden aria-live="polite">
+    <blockquote id="story-scripture-text" style="margin:0"></blockquote>
+    <figcaption class="note" id="story-scripture-reference" style="margin-top:8px"></figcaption>
+  </figure>
   <div class="stack two" id="story-list" style="margin-top:16px"></div>
   <a class="card link" href="#share" style="margin-top:12px"><div><b>Share your story</b><span>Send us your testimony video</span></div><i>→</i></a>
 </div></div>
@@ -1182,6 +1187,16 @@ onShow.home = loadWall;
 
 /* ───────────── STORIES ───────────── */
 const storyTags = ["All", ...STORY_TAGS];
+const storyScriptures = {
+  Addiction: ["John 8:36","If the Son therefore shall make you free, ye shall be free indeed."],
+  Depression: ["Matthew 11:28","Come unto me, all ye that labour and are heavy laden, and I will give you rest."],
+  Suicide: ["Romans 8:38–39","Nor height, nor depth, nor any other creature, shall be able to separate us from the love of God, which is in Christ Jesus our Lord."],
+  Grief: ["John 11:35","Jesus wept."],
+  Shame: ["Romans 8:1","There is therefore now no condemnation to them which are in Christ Jesus, who walk not after the flesh, but after the Spirit."],
+  Anxiety: ["John 14:27","Let not your heart be troubled, neither let it be afraid."],
+  Lust: ["Matthew 5:8","Blessed are the pure in heart: for they shall see God."],
+  Other: ["Hebrews 4:16","Let us therefore come boldly unto the throne of grace, that we may obtain mercy, and find grace to help in time of need."]
+};
 const curatedStories = [
   {
     tag: "Suicide",
@@ -1343,6 +1358,10 @@ function renderStories(tag) {
   storyTag = tag;
   const match = storyTags.find(t => slug(t) === slug(tag || "all"));
   const active = match || "All";
+  const scripture = storyScriptures[active];
+  $("story-scripture").hidden = !scripture;
+  $("story-scripture-text").textContent = scripture ? scripture[1] : "";
+  $("story-scripture-reference").textContent = scripture ? scripture[0] + " (KJV)" : "";
   const sc = $("story-chips"); sc.replaceChildren();
   storyTags.forEach(t => {
     const b = el("button", "chip", t); b.type = "button"; b.setAttribute("aria-pressed", String(t === active));
