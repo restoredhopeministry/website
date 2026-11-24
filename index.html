@@ -1200,6 +1200,25 @@ function renderStories(tag) {
     b.addEventListener("click", () => renderStories(t)); sc.appendChild(b);
   });
   const list = $("story-list"); list.replaceChildren();
+  const showMaricella = active === "All" || active === "Suicide";
+  if (showMaricella) {
+    const card = el("article", "card story");
+    const body = el("div", "body");
+    const watch = el("a", "ghost", "Watch on YouTube");
+    watch.href = "https://www.youtube.com/watch?v=2t2lnyMiTrg";
+    watch.target = "_blank";
+    watch.rel = "noopener noreferrer";
+    body.append(
+      el("span", "tag", "Suicide"),
+      el("h4", "", "Maricella Chairez — Finding Hope Through Faith"),
+      el("p", "", "Maricella shares how her faith helped her after surviving suicide attempts."),
+      el("p", "", "Content note: This episode discusses suicide attempts."),
+      el("p", "by", "We Need to Talk podcast"),
+      watch
+    );
+    card.appendChild(body);
+    list.appendChild(card);
+  }
   if (!stories) {
     if (storyState === "idle") loadStories();
     if (storyState === "error") {
@@ -1212,7 +1231,7 @@ function renderStories(tag) {
   }
   const playable = stories.map(s => ({ ...s, vid: API.ytId(s.videoUrl) })).filter(s => s.vid);
   const shown = playable.filter(s => active === "All" || s.tag === active);
-  if (!shown.length) {
+  if (!shown.length && !showMaricella) {
     list.appendChild(el("div", "card empty", playable.length ? "No stories on that yet. Choose All to see every story." : "Stories are on their way. Yours could be the first."));
     return;
   }
