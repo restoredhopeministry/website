@@ -1182,6 +1182,35 @@ onShow.home = loadWall;
 
 /* ───────────── STORIES ───────────── */
 const storyTags = ["All", ...STORY_TAGS];
+const curatedStories = [
+  {
+    tag: "Suicide",
+    title: "Maricella Chairez — Finding Hope Through Faith",
+    description: "Maricella shares how her faith helped her after surviving suicide attempts.",
+    contentNote: "This episode discusses suicide attempts.",
+    source: "We Need to Talk podcast",
+    url: "https://www.youtube.com/watch?v=2t2lnyMiTrg",
+    linkLabel: "Watch on YouTube"
+  },
+  {
+    tag: "Depression",
+    title: "Victoria Childress — Finding Hope Through Depression",
+    description: "Victoria shares how she turned to God while struggling with depression and self-harm.",
+    contentNote: "This film discusses self-harm and suicidal thoughts.",
+    source: "I Am Second",
+    url: "https://www.iamsecond.com/film/victoria-childress/",
+    linkLabel: "Watch on I Am Second"
+  },
+  {
+    tag: "Addiction",
+    title: "Brian “Head” Welch — Faith and Recovery",
+    description: "The Korn guitarist talks about addiction, his faith, and what helped him change direction.",
+    source: "I Am Second",
+    url: "https://www.iamsecond.com/film/brian-welch-second-edition/",
+    linkLabel: "Watch on I Am Second"
+  }
+];
+
 let stories = null, storyState = "idle", storyTag;   // stories stay null until the database answers
 function loadStories() {
   storyState = "loading";
@@ -1200,25 +1229,20 @@ function renderStories(tag) {
     b.addEventListener("click", () => renderStories(t)); sc.appendChild(b);
   });
   const list = $("story-list"); list.replaceChildren();
-  const showMaricella = active === "All" || active === "Suicide";
-  if (showMaricella) {
+  const featured = curatedStories.filter(story => active === "All" || story.tag === active);
+  featured.forEach(story => {
     const card = el("article", "card story");
     const body = el("div", "body");
-    const watch = el("a", "ghost", "Watch on YouTube");
-    watch.href = "https://www.youtube.com/watch?v=2t2lnyMiTrg";
+    const watch = el("a", "ghost", story.linkLabel);
+    watch.href = story.url;
     watch.target = "_blank";
     watch.rel = "noopener noreferrer";
-    body.append(
-      el("span", "tag", "Suicide"),
-      el("h4", "", "Maricella Chairez — Finding Hope Through Faith"),
-      el("p", "", "Maricella shares how her faith helped her after surviving suicide attempts."),
-      el("p", "", "Content note: This episode discusses suicide attempts."),
-      el("p", "by", "We Need to Talk podcast"),
-      watch
-    );
+    body.append(el("span", "tag", story.tag), el("h4", "", story.title), el("p", "", story.description));
+    if (story.contentNote) body.append(el("p", "", "Content note: " + story.contentNote));
+    body.append(el("p", "by", story.source), watch);
     card.appendChild(body);
     list.appendChild(card);
-  }
+  });
   if (!stories) {
     if (storyState === "idle") loadStories();
     if (storyState === "error") {
@@ -1231,7 +1255,7 @@ function renderStories(tag) {
   }
   const playable = stories.map(s => ({ ...s, vid: API.ytId(s.videoUrl) })).filter(s => s.vid);
   const shown = playable.filter(s => active === "All" || s.tag === active);
-  if (!shown.length && !showMaricella) {
+  if (!shown.length && !featured.length) {
     list.appendChild(el("div", "card empty", playable.length ? "No stories on that yet. Choose All to see every story." : "Stories are on their way. Yours could be the first."));
     return;
   }
