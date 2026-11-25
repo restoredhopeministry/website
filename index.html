@@ -145,7 +145,17 @@
   @media (prefers-reduced-motion: reduce) { .cross-scene { animation: none; } .hero::after { display: none; } }
   .hero-text { position: relative; width: 100%; max-width: 760px; margin-top: auto; padding: 20px 16px 6px; }
   .cross-lettering { margin: 0 auto 32px; max-width: 1080px; color: #fff0d9; }
-  .cross-scene { display: block; width: 100%; height: auto; margin: 0 auto; border-radius: 8px; }
+  .cross-scene {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+    border-radius: 8px;
+    mask-image:
+      linear-gradient(to right, transparent, black 8%, black 92%, transparent),
+      linear-gradient(to bottom, transparent, black 10%, black 89%, transparent);
+    mask-composite: intersect;
+  }
   .cross-transcript { margin: 12px auto 0; max-width: 36rem; font: 400 14px/1.5 var(--body); }
   .cross-transcript summary { cursor: pointer; }
   .cross-transcript p { margin: 8px 0; text-wrap: balance; }
